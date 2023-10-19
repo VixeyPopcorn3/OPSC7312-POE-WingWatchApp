@@ -37,7 +37,12 @@ class NewSightPage : AppCompatActivity() {
 
         Backbtn.setOnClickListener()
         {
-            startActivity(Intent(this@NewSightPage, MainPageFrame::class.java))
+            startActivity(Intent(this@NewSightPage, MainPageFrame::class.java).apply
+            {
+                if (loginId != null) {
+                    intent.putExtra("loginId", loginId.toInt())
+                }
+            })
             NewSightPage().finish()
         }
         val Savebtn = findViewById<Button>(R.id.Savebtn)
