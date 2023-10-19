@@ -1,5 +1,6 @@
 package com.example.opsc7312_poe_wingwatchapp
 import android.os.Bundle
+import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,7 @@ class ProfandSetFragment : Fragment() {
     private lateinit var usernameTxt: TextView
     private lateinit var emailTxt: TextView
 
-    private lateinit var loginId: String
+    private var loginId: Int = 0
     private val db = Firebase.firestore
 
     override fun onCreateView(
@@ -25,7 +26,7 @@ class ProfandSetFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profand_set, container, false)
 
-        loginId = arguments?.getString("loginId") ?: ""
+        loginId = arguments?.getInt("loginId") ?: 0
 
         usernameTxt = view.findViewById<TextView>(R.id.Usernametxt)
         emailTxt = view.findViewById<TextView>(R.id.Emailtxt)
@@ -78,23 +79,25 @@ class ProfandSetFragment : Fragment() {
         //Code for settings change
     }
     private fun getDets(usernameTxt: TextView, emailTxt: TextView) {
-
-        var userName = ""
-        var email = ""
         db.collection("Users")
             .whereEqualTo("LoginID", loginId)
-            //.orderBy("StartDate")
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-                    userName = document.getString("Username").toString()
-                    email = document.getString("Email").toString()
+                    val userName = document.getString("Username")
+                    val email = document.getString("Email")
+
+                    if (userName != null && email != null) {
+                        val formattedUsername = "      Username: <i>$userName</i>"
+                        val formattedEmail = "      Email: <i>$email</i>"
+
+                        usernameTxt.text = Html.fromHtml(formattedUsername, Html.FROM_HTML_MODE_LEGACY)
+                        emailTxt.text = Html.fromHtml(formattedEmail, Html.FROM_HTML_MODE_LEGACY)
+                    }
                 }
             }
             .addOnFailureListener { exception ->
                 // Handle any errors
             }
-        usernameTxt.text = "      Username: " + userName
-        emailTxt.text = "      Email: " + email
     }
 }

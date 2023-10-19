@@ -3,6 +3,7 @@ package com.example.opsc7312_poe_wingwatchapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings.Global.putInt
 import android.text.TextUtils
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -79,10 +80,20 @@ class LogInPage : AppCompatActivity() {
                         Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
                         val loginId = document.getLong("LoginID")
                         Toast.makeText(this, "Welcome " + dBUsername, Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@LogInPage, MainPageFrame::class.java).apply//if login correct
+                        /*startActivity(Intent(this@LogInPage, MainPageFrame::class.java).apply//if login correct
                         {
-                            putExtra("loginId", loginId.toString())
-                        })
+                            val fragment = ObservationsFragment()
+                            val bundle = Bundle()
+                            if (loginId != null) {
+                                bundle.putInt("loginId", loginId.toInt())
+                            } // Cast loginId to an integer
+                            fragment.arguments = bundle
+                        })*/
+                        val intent = Intent(this@LogInPage, MainPageFrame::class.java)
+                        if (loginId != null) {
+                            intent.putExtra("loginId", loginId.toInt())
+                        }
+                        startActivity(intent)
                         temp = true
                         break // Exit the loop if a match is found
                     }
