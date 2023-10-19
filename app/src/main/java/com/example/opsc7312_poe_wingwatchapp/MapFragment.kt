@@ -10,6 +10,7 @@ import android.widget.Button
 
 class MapFragment : Fragment() {
 
+    private lateinit var loginId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -17,10 +18,13 @@ class MapFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_map2, container, false)
 
+        loginId = arguments?.getString("loginId") ?: ""
+
         val newSightbtn = view.findViewById<Button>(R.id.newSightbtn)
         newSightbtn.setOnClickListener {
             // Create an Intent to open the NewActivity
             val intent = Intent(MainPageFrame(), NewSightPage::class.java)
+            intent.putExtra("loginId", loginId)
             startActivity(intent)
             // Finish the current activity to close it
             MainPageFrame().finish()

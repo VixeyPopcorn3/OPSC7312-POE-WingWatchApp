@@ -14,7 +14,7 @@
         android:padding="8dp">
 
         <LinearLayout
-            android:id="@+id/EmailLay"
+            android:id="@+id/SpeciesNameLay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -41,7 +41,7 @@
             android:id="@+id/LocSeenLay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/EmailLay"
+            android:layout_below="@id/SpeciesNameLay"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
