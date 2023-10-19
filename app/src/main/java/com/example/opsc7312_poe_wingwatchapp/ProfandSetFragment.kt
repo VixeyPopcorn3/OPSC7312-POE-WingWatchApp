@@ -14,8 +14,11 @@ class ProfandSetFragment : Fragment() {
     private lateinit var spinner: Spinner
     private lateinit var seekBar: SeekBar
     private lateinit var distanceUnitsEtxt: TextView
+    private lateinit var distanceUnitstxt: TextView
     private lateinit var usernameTxt: TextView
     private lateinit var emailTxt: TextView
+
+    private var selectedDistanceUnit: String = "m"
 
     private var loginId: Int = 0
     private val db = Firebase.firestore
@@ -31,7 +34,7 @@ class ProfandSetFragment : Fragment() {
         usernameTxt = view.findViewById<TextView>(R.id.Usernametxt)
         emailTxt = view.findViewById<TextView>(R.id.Emailtxt)
 
-        // Initialize the Spinner
+        /* Initialize the Spinner
         spinner = view.findViewById(R.id.Units_spinner)
         // Define an ArrayAdapter for the Spinner
         val unitsAdapter = ArrayAdapter.createFromResource(
@@ -42,11 +45,45 @@ class ProfandSetFragment : Fragment() {
         // Set the dropdown view resource
         unitsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Set the ArrayAdapter to the Spinner
+        spinner.adapter = unitsAdapter*/
+
+        // Initialize the Spinner
+        spinner = view.findViewById(R.id.Units_spinner)
+        // Define an ArrayAdapter for the Spinner
+        val unitsAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.units_array, // Create this array in your strings.xml
+            android.R.layout.simple_spinner_item
+        )
+        distanceUnitstxt = view.findViewById(R.id.DistanceUnitstxt)
+        // Set the dropdown view resource
+        unitsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Set the ArrayAdapter to the Spinner
         spinner.adapter = unitsAdapter
+
+        // Add an OnItemSelectedListener to the Spinner
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Get the selected item from the Spinner
+                val selectedUnit = parent?.getItemAtPosition(position).toString()
+
+                // Update the "DistanceUnitsEtxt" TextView based on the selected unit
+                if (selectedUnit == "Imperial") {
+                    distanceUnitstxt.text = "m" // Change to "m" for Imperial
+                } else if (selectedUnit == "Metric") {
+                    distanceUnitstxt.text = "Km" // Change to "Km" for Metric
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Handle the case when nothing is selected (if needed)
+            }
+        }
 
 
         seekBar = view.findViewById(R.id.seekBar)
         distanceUnitsEtxt = view.findViewById(R.id.DistanceUnitsEtxt)
+
         // Add a listener to the SeekBar
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {

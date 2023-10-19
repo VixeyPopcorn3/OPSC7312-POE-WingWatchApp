@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ObservationsAdapter(private val observations: List<Observations>) : RecyclerView.Adapter<ObservationsAdapter.ObsViewHolder>() {
+class ObservationsAdapter(private var observations: List<Observations>) : RecyclerView.Adapter<ObservationsAdapter.ObsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ObsViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,6 +22,10 @@ class ObservationsAdapter(private val observations: List<Observations>) : Recycl
     override fun getItemCount(): Int {
         return observations.size
     }
+    fun updateData(newData: List<Observations>) {
+        observations = newData
+        notifyDataSetChanged()
+    }
 
     inner class ObsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val speciestxt: TextView = itemView.findViewById(R.id.Speciestxt)
@@ -36,4 +40,5 @@ class ObservationsAdapter(private val observations: List<Observations>) : Recycl
             behaviourtxt.text = observation.behaviour
         }
     }
+
 }

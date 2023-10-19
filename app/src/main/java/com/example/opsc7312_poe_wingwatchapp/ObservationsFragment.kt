@@ -23,6 +23,9 @@ class ObservationsFragment : Fragment() {
     private lateinit var observationAdapter: ObservationsAdapter
     private val observationsList: MutableList<Observations> = mutableListOf()
 
+    private var selectedDate: String? = null
+    private var selectedLocation: String? = null
+
     private var loginId: Int = 0
     private val db = Firebase.firestore
 
@@ -62,10 +65,13 @@ class ObservationsFragment : Fragment() {
         calendarBtn.setOnClickListener {
             showDatePicker(caltxt)
         }
+
         val filterBtn = view.findViewById<Button>(R.id.Filterbtn)
 
-        // Set an OnClickListener for the calendar button
+        // Set an OnClickListener for the filter button
         filterBtn.setOnClickListener {
+            selectedDate = caltxt.text.toString()
+            selectedLocation = spinner.selectedItem.toString()
             filter()
         }
 
@@ -89,8 +95,10 @@ class ObservationsFragment : Fragment() {
             requireContext(),
             { _, selectedYear, selectedMonth, selectedDay ->
                 // Update the caltxt TextView with the selected date
-                val formattedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear)
+                val formattedDate = String.format("%02d-%02d-%d", selectedDay, selectedMonth + 1, selectedYear)
                 caltxt.text = formattedDate
+                // Store the formatted date in the selectedDate property for filtering
+                selectedDate = formattedDate
             },
             year,
             month,
@@ -101,7 +109,14 @@ class ObservationsFragment : Fragment() {
 
     private fun filter()
     {
+        // Filter the observations based on selected date and location
+        val filteredObservations = observationsList.filter { observation ->
+            (selectedDate.isNullOrBlank() || observation.dateSeen == selectedDate) &&
+                    (selectedLocation.isNullOrBlank() || observation.locationSeen == selectedLocation)
 
+        }
+            // Update the adapter with filtered observations
+            observationAdapter.updateData(filteredObservations)
     }
     private fun fetchLocationfromDb()
     {
@@ -148,7 +163,7 @@ class ObservationsFragment : Fragment() {
     }
 
         //fetches observations where saved
-        private fun fetchObservations() {
+        /*private fun fetchObservations() {
             // Clear the existing observations
             observationsList.clear()
 
@@ -175,6 +190,45 @@ class ObservationsFragment : Fragment() {
                 .addOnFailureListener { e ->
                     Toast.makeText(context, "Error in loading observations: $e", Toast.LENGTH_SHORT).show()
                 }
+        }*/
+        private fun fetchObservations() {
+            // Clear the existing observations
+            observationsList.clear()
+
+            // Create a Firestore query for observations filtered by loginId
+            var query = db.collection("Observations")
+                .whereEqualTo("LoginID", loginId)
+
+            // Apply additional filters based on the selected date and location
+            if (!selectedDate.isNullOrBlank()) {
+                query = query.whereEqualTo("DateSeen", selectedDate)
+            }
+            if (!selectedLocation.isNullOrBlank()) {
+                query = query.whereEqualTo("Hotspot", selectedLocation)
+            }
+
+            // Execute the query
+            query.get()
+                .addOnSuccessListener { querySnapshot ->
+                    for (document in querySnapshot) {
+                        val species = document.getString("SpeciesName")
+                        val locationSeen = document.getString("Hotspot")
+                        val dateSeen = document.getString("DateSeen")
+                        val behaviour = document.getString("Behaviour")
+
+                        if (species != null && locationSeen != null && dateSeen != null && behaviour != null) {
+                            val observation = Observations(species, locationSeen, dateSeen, behaviour, loginId)
+                            observationsList.add(observation)
+                        }
+                    }
+
+                    // Notify the adapter that the data has changed
+                    observationAdapter.notifyDataSetChanged()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Error in loading observations: $e", Toast.LENGTH_SHORT).show()
+                }
         }
+
 
 }
