@@ -46,57 +46,98 @@
                 android:textColor="#000000"
                 android:textSize="87sp" />
 
-            <EditText
-                android:id="@+id/UsernameEtxt"
+            <LinearLayout
+                android:id="@+id/EmailLay"
                 android:layout_width="329dp"
                 android:layout_height="80dp"
-                android:layout_below="@+id/LogIntxt"
+                android:layout_below="@id/LogIntxt"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="70dp"
+                android:layout_marginTop="50dp"
                 android:background="@drawable/edit_text_border"
-                android:ems="10"
-                android:fontFamily="@font/alfa_slab_one"
-                android:inputType="textPersonName"
-                android:text="UserName:"
-                android:textColor="#000000" />
+                android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/PasswordLinLay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/UsernameEtxt"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/PasswordEtxt"
-                    android:layout_width="250dp"
-                    android:layout_height="78dp"
-                    android:background="@drawable/edit_text_border"
+                <TextView
+                    android:id="@+id/EmailHtxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
                     android:ems="10"
                     android:fontFamily="@font/alfa_slab_one"
-                    android:inputType="textPassword"
-                    android:text="Password:"
-                    android:textColor="#000000" />
+                    android:inputType="textPersonName"
+                    android:text="Email:"
+                    android:textColor="#000000"
+                    android:textSize="18dp" />
 
-                <Button
-                    android:id="@+id/showHideBtn"
+                <EditText
+                    android:id="@+id/EmailEtxt"
+                    android:layout_width="329dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/EmailHtxt"
+                    android:layout_marginLeft="15dp"
+                    android:backgroundTint="#00FFFFFF"
+                    android:ems="10"
+                    android:fontFamily="@font/alfa_slab_one"
+                    android:inputType="textPersonName"
+                    android:textColor="#000000"
+                    android:textSize="16dp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/PassLay"
+                android:layout_width="329dp"
+                android:layout_height="80dp"
+                android:layout_below="@id/EmailLay"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edit_text_border"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/PasswordHtxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:ems="10"
+                    android:fontFamily="@font/alfa_slab_one"
+                    android:text="Password:"
+                    android:textColor="#000000"
+                    android:textSize="18dp" />
+
+                <LinearLayout
+                    android:id="@+id/PasswordLinLay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:backgroundTint="#AFAFAF"
-                    android:fontFamily="@font/alfa_slab_one"
-                    android:text="Show"
-                    android:textColor="#000000"
-                    android:textSize="12sp" />
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/PasswordEtxt"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/alfa_slab_one"
+                        android:inputType="textPassword"
+                        android:textColor="#000000" />
+
+                    <Button
+                        android:id="@+id/showHideBtn"
+                        android:layout_width="79dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="#AFAFAF"
+                        android:fontFamily="@font/alfa_slab_one"
+                        android:text="Show"
+                        android:textColor="#000000"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <Button
                 android:id="@+id/LogInbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/PasswordLinLay"
+                android:layout_below="@id/PassLay"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="70dp"
                 android:background="@drawable/button_selector"
@@ -104,8 +145,6 @@
                 android:text="Log In"
                 android:textColor="#000000"
                 android:textSize="28sp" />
-
         </RelativeLayout>
     </ScrollView>
-
 </RelativeLayout>

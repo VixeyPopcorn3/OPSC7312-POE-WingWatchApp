@@ -1,7 +1,6 @@
 package com.example.opsc7312_poe_wingwatchapp
 
 
-import android.app.DownloadManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -35,7 +34,7 @@ class RegisterPage : AppCompatActivity() {
     }
 
     private fun register() {
-        var db = Firebase.firestore
+        val db = Firebase.firestore
         val editTextEmail = findViewById<EditText>(R.id.EmailEtxt)
         val editTextUsername = findViewById<EditText>(R.id.UsernameEtxt)
         val editTextPassword = findViewById<EditText>(R.id.PasswordEtxt)
