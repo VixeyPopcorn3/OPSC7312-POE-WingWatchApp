@@ -69,7 +69,7 @@
                 android:textStyle="bold|italic" />
 
             <TextView
-                android:id="@+id/emptytxt2"
+                android:id="@+id/caltxt"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
