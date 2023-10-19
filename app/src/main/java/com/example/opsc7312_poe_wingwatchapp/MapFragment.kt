@@ -35,6 +35,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var requestQueue: RequestQueue
     private val eBirdApiKey = "m1gcp6fdtt7b"
     private lateinit var loginId: String
+    //private lateinit var uLat:
+    //private lateinit var uLat:
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +61,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             startActivity(intent)
         }
 
+
         return view
     }
 
@@ -75,6 +78,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val intent = Intent(requireContext(), HotspotDetsPage::class.java)
                 intent.putExtra("hotspot_name", hotspotName)
                 intent.putExtra("loginId", loginId)
+                //intent.putExtra("uLat", uLat)
+                //intent.putExtra("uLong", uLong)
                 startActivity(intent)
             }
             true // Return true to indicate that the click event is handled
