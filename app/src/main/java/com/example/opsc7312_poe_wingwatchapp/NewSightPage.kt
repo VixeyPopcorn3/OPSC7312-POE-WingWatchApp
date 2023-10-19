@@ -9,6 +9,8 @@ import android.widget.Toast
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NewSightPage : AppCompatActivity() {
 
@@ -56,12 +58,14 @@ class NewSightPage : AppCompatActivity() {
     }
 
     private fun saveObservation(species: String, hotspot: String, behaviour: String, notes: String, loginID: String) {
+        val dateSeen = getCurrentDateAsString()
         val observation = hashMapOf(
             "SpeciesName" to species,
             "Hotspot" to hotspot,
             "Behaviour" to behaviour,
             "Notes" to notes,
-            "LoginID" to loginID
+            "LoginID" to loginID,
+            "DateSeen" to dateSeen
         )
 
         val observationsCollection = db.collection("Observations")
@@ -76,6 +80,11 @@ class NewSightPage : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error adding observation: $e", Toast.LENGTH_SHORT).show()
             }
+    }
+    fun getCurrentDateAsString(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val date = Date()
+        return dateFormat.format(date)
     }
 
 }
