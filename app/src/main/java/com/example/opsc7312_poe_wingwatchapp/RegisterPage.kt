@@ -5,6 +5,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -29,6 +31,18 @@ class RegisterPage : AppCompatActivity() {
         Backbtn.setOnClickListener()
         {
             startActivity(Intent(this@RegisterPage, StartPage::class.java))
+        }
+        val showHideBtn= findViewById<Button>(R.id.showHideBtn)
+        val password = findViewById<EditText>(R.id.PasswordEtxt)
+
+        showHideBtn.setOnClickListener {
+            if (showHideBtn.text.toString().equals("Show")) {
+                password.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                showHideBtn.text = "Hide"
+            } else {
+                password.transformationMethod = PasswordTransformationMethod.getInstance()
+                showHideBtn.text = "Show"
+            }
         }
 
     }
