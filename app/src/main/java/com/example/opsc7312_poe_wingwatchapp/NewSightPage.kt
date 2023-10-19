@@ -19,14 +19,14 @@ class NewSightPage : AppCompatActivity() {
     private lateinit var behaviourTxt: TextView
     private lateinit var notesTxt: TextView
 
-    private lateinit var loginId: String
+    private var loginId: Int = 0
     private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_sight_page)
 
-        loginId = intent.getStringExtra("loginId").toString()
+        loginId = intent.getIntExtra("loginId", 0)
 
         speciesNameTxt = findViewById<EditText>(R.id.SpeciesNameEtxt)
         hotspotTxt = findViewById<EditText>(R.id.HotspotEtxt)
@@ -57,7 +57,7 @@ class NewSightPage : AppCompatActivity() {
         }
     }
 
-    private fun saveObservation(species: String, hotspot: String, behaviour: String, notes: String, loginID: String) {
+    private fun saveObservation(species: String, hotspot: String, behaviour: String, notes: String, loginID: Int) {
         val dateSeen = getCurrentDateAsString()
         val observation = hashMapOf(
             "SpeciesName" to species,
@@ -74,7 +74,9 @@ class NewSightPage : AppCompatActivity() {
                 Toast.makeText(this, "Observation added: ${documentReference.id}", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this@NewSightPage, MainPageFrame::class.java).apply
                 {
-                    putExtra("loginId", loginId.toString())
+                    if (loginId != null) {
+                        intent.putExtra("loginId", loginId.toInt())
+                    }
                 })
             }
             .addOnFailureListener { e ->

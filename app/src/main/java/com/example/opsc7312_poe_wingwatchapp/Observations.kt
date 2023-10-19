@@ -5,4 +5,5 @@ data class Observations(
     val locationSeen: String?,
     val dateSeen: String?,
     val behaviour: String?,
+    val loginId: Int
 )
