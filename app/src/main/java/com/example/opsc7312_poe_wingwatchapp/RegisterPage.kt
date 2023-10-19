@@ -49,7 +49,7 @@ class RegisterPage : AppCompatActivity() {
 
     private fun register() {
         val db = Firebase.firestore
-        val editTextEmail = findViewById<EditText>(R.id.EmailEtxt)
+        val editTextEmail = findViewById<EditText>(R.id.SpeciesNameEtxt)
         val editTextUsername = findViewById<EditText>(R.id.UsernameEtxt)
         val editTextPassword = findViewById<EditText>(R.id.PasswordEtxt)
 

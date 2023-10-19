@@ -47,7 +47,7 @@
                 android:textSize="87sp" />
 
             <LinearLayout
-                android:id="@+id/EmailLay"
+                android:id="@+id/SpeciesNameLay"
                 android:layout_width="329dp"
                 android:layout_height="80dp"
                 android:layout_below="@id/LogIntxt"
@@ -69,7 +69,7 @@
                     android:textSize="18dp" />
 
                 <EditText
-                    android:id="@+id/EmailEtxt"
+                    android:id="@+id/SpeciesNameEtxt"
                     android:layout_width="329dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/EmailHtxt"
@@ -86,7 +86,7 @@
                 android:id="@+id/PassLay"
                 android:layout_width="329dp"
                 android:layout_height="80dp"
-                android:layout_below="@id/EmailLay"
+                android:layout_below="@id/SpeciesNameLay"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/edit_text_border"

@@ -11,6 +11,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 
@@ -19,12 +21,17 @@ class ObservationsFragment : Fragment() {
     private lateinit var observationAdapter: ObservationsAdapter
     private val observationsList: MutableList<Observations> = mutableListOf()
 
+    private lateinit var loginId: String
+    private val db = Firebase.firestore
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_observations2, container, false)
+
+        loginId = arguments?.getString("loginId") ?: ""
 
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -35,6 +42,7 @@ class ObservationsFragment : Fragment() {
         newSightbtn.setOnClickListener {
             // Create an Intent to open the NewActivity
             val intent = Intent(requireContext(), NewSightPage::class.java)
+            intent.putExtra("loginId", loginId)
             startActivity(intent)
             // Finish the current activity to close it
             MainPageFrame().finish()

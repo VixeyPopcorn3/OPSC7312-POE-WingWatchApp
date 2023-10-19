@@ -47,7 +47,7 @@ class LogInPage : AppCompatActivity() {
 
     private fun logIn() {
         val db = Firebase.firestore
-        val editTextEmail = findViewById<EditText>(R.id.EmailEtxt)
+        val editTextEmail = findViewById<EditText>(R.id.SpeciesNameEtxt)
         val editTextPassword = findViewById<EditText>(R.id.PasswordEtxt)
         var temp = false
 
