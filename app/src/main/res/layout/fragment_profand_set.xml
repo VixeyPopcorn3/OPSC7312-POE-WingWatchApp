@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/ProfandSetFrame"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".ProfandSetFragment">
+
+<LinearLayout
+    android:layout_width="390dp"
+    android:layout_height="800dp"
+    android:layout_marginLeft="10dp"
+    android:background="#FFFDF1E0"
+    android:backgroundTint="#FFFDF1E0"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/ProfandSettxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/lily_script_one"
+        android:text="Profile &amp; Settings"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="48sp" />
+
+    <TextView
+        android:id="@+id/Usernametxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="      Username: "
+        android:textColor="#000000"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/Emailtxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="      Email: "
+        android:textColor="#000000"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/Unitstxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="        Measuring Units Sytem: "
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <Spinner
+        android:id="@+id/Units_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="0dp"
+        android:backgroundTint="#000000"
+        android:spinnerMode="dropdown"
+        android:textAlignment="textEnd" />
+
+    <TextView
+        android:id="@+id/Distnacetxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="        Maximum Distance you are  \n        willing to Travel: "
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#000000"
+        android:max="500"/>
+
+    <LinearLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:backgroundTint="@android:color/transparent" />
+
+        <EditText
+            android:id="@+id/DistanceUnitsEtxt"
+            android:layout_width="111dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/DistanceUnitstxt"
+            android:layout_width="69dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="0dp"
+            android:text="Km"
+            android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/ApplyBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_selector"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="Apply"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textIsSelectable="false"
+        android:textSize="24sp"
+        app:iconTint="#000000" />
+</LinearLayout>
+</FrameLayout>

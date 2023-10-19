@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "60079899940",
+    "project_id": "opsc7312-poe-wingwatch",
+    "storage_bucket": "opsc7312-poe-wingwatch.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60079899940:android:f6fa05d8507cccb489dfb1",
+        "android_client_info": {
+          "package_name": "com.example.opsc7312_poe_wingwatchapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFkWe4rTaKhfsSoILdrySbkFtZIbF-jDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60079899940:android:b91fad894b2f1ad789dfb1",
+        "android_client_info": {
+          "package_name": "com.opscpoewingwatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFkWe4rTaKhfsSoILdrySbkFtZIbF-jDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

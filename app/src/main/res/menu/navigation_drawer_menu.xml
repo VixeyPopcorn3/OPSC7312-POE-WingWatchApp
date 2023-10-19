@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_ProfandSet"
+        android:title="@string/menu_ProfandSet"
+        android:icon="@drawable/settingsicon" />
+    <item
+        android:id="@+id/nav_Observation"
+        android:icon="@drawable/binocularsicon"
+        android:title="@string/menu_Observations" />
+    <item
+        android:id="@+id/nav_Map"
+        android:title="@string/menu_Map"
+        android:icon="@drawable/mapicon"/>
+    <item
+        android:id="@+id/nav_ComandAchie"
+        android:title="@string/menu_Map"
+        android:icon="@drawable/medalicon" />
+    <item
+        android:id="@+id/nav_Journal"
+        android:title="@string/menu_Journal"
+        android:icon="@drawable/journalicon" />
+</menu>

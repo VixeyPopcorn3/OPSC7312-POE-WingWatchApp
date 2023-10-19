@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ObservationsFragment">
+
+    <LinearLayout
+        android:layout_width="390dp"
+        android:layout_height="715dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/whitebackground"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/obsHtxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/lobster"
+            android:text="@string/menu_Observations"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="55dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/filtertxt"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/alfa_slab_one"
+                android:text="Filter:"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
+            <TextView
+                android:id="@+id/locSeenHtxt"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/berkshire_swash"
+                android:text="Loation Seen:"
+                android:textColor="#000000"
+                android:textSize="18dp"
+                android:textStyle="bold|italic" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/emptytxt"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/alfa_slab_one"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/DateSeenHtxt"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/berkshire_swash"
+                android:text="Date Seen:"
+                android:textColor="#000000"
+                android:textSize="18dp"
+                android:textStyle="bold|italic" />
+
+            <TextView
+                android:id="@+id/emptytxt2"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/alfa_slab_one"
+                android:textColor="@color/black"
+                android:textSize="16dp"/>
+
+            <Button
+                android:id="@+id/calendarbtn"
+                android:layout_width="57dp"
+                android:layout_height="57dp"
+                android:background="@drawable/calendaricon" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            tools:listitem="@layout/item_obs" />
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/newSightbtn"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#000000"
+        android:fontFamily="@font/alfa_slab_one"
+        android:rotation="4"
+        android:rotationX="8"
+        android:rotationY="-8"
+        android:text="New Sighting"
+        android:textColor="#000000"
+        android:textSize="14dp" />
+</FrameLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapFragment">
+
+
+    <RelativeLayout
+        android:layout_width="390dp"
+        android:layout_height="715dp"
+        android:layout_marginLeft="10dp">
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/newSightbtn"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#000000"
+        android:fontFamily="@font/alfa_slab_one"
+        android:rotation="4"
+        android:rotationX="8"
+        android:rotationY="-8"
+        android:text="New Sighting"
+        android:textColor="#000000"
+        android:textSize="14dp" />
+</FrameLayout>

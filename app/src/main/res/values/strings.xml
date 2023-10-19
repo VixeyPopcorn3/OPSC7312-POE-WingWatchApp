@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">OPSC7312-POE-WingWatchApp</string>
+    <string name="title_activity_main_page">MainPage</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">WingWatch</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_LogOut">Log Out</string>
+    <string name="menu_ProfandSet">Profile &amp; Settings</string>
+    <string name="menu_Observations">Observations</string>
+    <string name="menu_Map">Map</string>
+    <string name="menu_ComandAchie">Community &amp; Achievements</string>
+    <string name="menu_Journal">Journal</string>
+    <string name="UnderCon">This Feature is Coming Soon, Currently Under Construction</string>
+
+    <string-array name="units_array">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+
+</resources>
