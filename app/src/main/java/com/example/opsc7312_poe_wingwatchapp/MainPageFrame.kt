@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -21,9 +22,14 @@ class MainPageFrame : AppCompatActivity() {
     private val comandAchieFragment = ComandAchieFragment()
     private val journalFragment = JournalFragment()
 
+    private lateinit var loginId: String // Declare loginId as a lateinit var
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_page_frame)
+
+        // Retrieve the loginId extra from the intent
+        loginId = intent.getStringExtra("loginId").toString()
 
         val LogOutbtn = findViewById<Button>(R.id.LogOutBtn)
 
@@ -108,9 +114,9 @@ class MainPageFrame : AppCompatActivity() {
     }
 
     private fun switchFragment(fragment: Fragment) {
-        //val bundle = Bundle()
-        //bundle.putString("loginId", loginId) for login details linked idk if you gonna use this
-        //fragment.arguments = bundle
+        val bundle = Bundle()
+        bundle.putString("loginId", loginId) //for login details linked idk if you gonna use this
+        fragment.arguments = bundle
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.contentLayout, fragment)

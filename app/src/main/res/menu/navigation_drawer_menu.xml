@@ -14,7 +14,7 @@
         android:icon="@drawable/mapicon"/>
     <item
         android:id="@+id/nav_ComandAchie"
-        android:title="@string/menu_Map"
+        android:title="@string/menu_ComandAchie"
         android:icon="@drawable/medalicon" />
     <item
         android:id="@+id/nav_Journal"

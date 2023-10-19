@@ -5,18 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class ProfandSetFragment : Fragment() {
 
     private lateinit var spinner: Spinner
     private lateinit var seekBar: SeekBar
     private lateinit var distanceUnitsEtxt: TextView
+    private lateinit var usernameTxt: TextView
+    private lateinit var emailTxt: TextView
+
+    private lateinit var loginId: String
+    private val db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profand_set, container, false)
+
+        loginId = arguments?.getString("loginId") ?: ""
+
+        usernameTxt = view.findViewById<TextView>(R.id.Usernametxt)
+        emailTxt = view.findViewById<TextView>(R.id.Emailtxt)
 
         // Initialize the Spinner
         spinner = view.findViewById(R.id.Units_spinner)
@@ -55,11 +67,34 @@ class ProfandSetFragment : Fragment() {
             SettingsChange()
         }
 
+        getDets(usernameTxt, emailTxt)
+
         // Inflate the layout for this fragment
         return view
     }
+
     private fun SettingsChange()
     {
         //Code for settings change
+    }
+    private fun getDets(usernameTxt: TextView, emailTxt: TextView) {
+
+        var userName = ""
+        var email = ""
+        db.collection("Users")
+            .whereEqualTo("LoginID", loginId)
+            //.orderBy("StartDate")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    userName = document.getString("Username").toString()
+                    email = document.getString("Email").toString()
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle any errors
+            }
+        usernameTxt.text = "      Username: " + userName
+        emailTxt.text = "      Email: " + email
     }
 }

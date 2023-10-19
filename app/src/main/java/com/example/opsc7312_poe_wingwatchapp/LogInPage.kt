@@ -49,6 +49,7 @@ class LogInPage : AppCompatActivity() {
         val db = Firebase.firestore
         val editTextEmail = findViewById<EditText>(R.id.EmailEtxt)
         val editTextPassword = findViewById<EditText>(R.id.PasswordEtxt)
+        var temp = false
 
         val Eemail = editTextEmail.text.toString().trim()
         val password = editTextPassword.text.toString().trim()
@@ -80,13 +81,18 @@ class LogInPage : AppCompatActivity() {
                         Toast.makeText(this, "Welcome " + dBUsername, Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@LogInPage, MainPageFrame::class.java).apply//if login correct
                         {
-                            putExtra("loginId", loginId)
+                            putExtra("loginId", loginId.toString())
                         })
+                        temp = true
                         break // Exit the loop if a match is found
                     }
                 }
-                // If the loop completes without finding a match, the email does not exist
-                Toast.makeText(this, "Please enter a valid email or password", Toast.LENGTH_SHORT).show()
+                if(temp==false)
+                {
+                    // If the loop completes without finding a match, the email does not exist
+                    Toast.makeText(this, "Please enter a valid email or password", Toast.LENGTH_SHORT).show()
+                }
+
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(this, "Error connecting to Database", Toast.LENGTH_SHORT).show()
