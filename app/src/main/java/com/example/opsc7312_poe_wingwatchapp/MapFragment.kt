@@ -16,6 +16,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import android.Manifest
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapView: MapView
@@ -34,9 +36,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var requestQueue: RequestQueue
     private val eBirdApiKey = "m1gcp6fdtt7b"
-    private lateinit var loginId: String
-    //private lateinit var uLat:
-    //private lateinit var uLat:
+    private var loginId: Int = 0
+    private var uLat: Double = 0.0
+    private var uLong: Double = 0.0
+    private var subNate2: String =""
+    private var locName: String =""
+    private var locID: String =""
+    private var hLat: Double = 0.0
+    private var hLong: Double = 0.0
+    private var detsCallback: DetsCallback? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +59,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         requestQueue = Volley.newRequestQueue(requireContext())
 
-        loginId = arguments?.getString("loginId") ?: ""
+        loginId = arguments?.getInt("loginId") ?: 0
 
         val newSightbtn = view.findViewById<Button>(R.id.newSightbtn)
         newSightbtn.setOnClickListener {
@@ -60,8 +68,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             intent.putExtra("loginId", loginId)
             startActivity(intent)
         }
-
-
         return view
     }
 
@@ -72,15 +78,39 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         // Set an OnMarkerClickListener for the map
         googleMap.setOnMarkerClickListener { marker ->
             // Get the hotspot name from the marker's tag
-            val hotspotName = marker.tag as? String
-            if (hotspotName != null) {
-                // Handle the marker click here, e.g., navigate to the HotspotDetailActivity
-                val intent = Intent(requireContext(), HotspotDetsPage::class.java)
-                intent.putExtra("hotspot_name", hotspotName)
-                intent.putExtra("loginId", loginId)
-                //intent.putExtra("uLat", uLat)
-                //intent.putExtra("uLong", uLong)
-                startActivity(intent)
+            val hotspotInfo = marker.tag as? HotspotInfo
+
+            if (hotspotInfo != null) {
+                // Access the properties from the tag
+                val hotspotName = hotspotInfo.hName
+                val locID = hotspotInfo.locID
+                val hLat = hotspotInfo.hLat
+                val hLong = hotspotInfo.hLong
+
+                //Toast.makeText(context, "locID: $locID, hLat: $hLat, hLong: $hLong", Toast.LENGTH_SHORT).show()
+                getDets(locID)
+                detsCallback = object : DetsCallback {
+                    override fun onDetsCompleted() {
+                        //Log.d("Response", subNate2)
+
+                        val intent = Intent(requireContext(), HotspotDetsPage::class.java)
+                        val extras = Bundle()
+
+                        extras.putString("hotspot_name", hotspotName)
+                        extras.putInt("loginId", loginId)
+                        extras.putString("subNate2", subNate2)
+                        extras.putString("locName", locName)
+                        extras.putDouble("uLat", uLat)
+                        extras.putDouble("uLong", uLong)
+                        extras.putDouble("hLat", hLat)
+                        extras.putDouble("hLong", hLong)
+
+                        intent.putExtras(extras)
+                        startActivity(intent)
+                    }
+                }
+                // Return 'true' to indicate that you've handled the click event
+                true
             }
             true // Return true to indicate that the click event is handled
         }
@@ -115,6 +145,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location: Location? ->
             if (location != null) {
                 val myLocation = LatLng(location.latitude, location.longitude)
+                uLat = location.latitude
+                uLong = location.longitude
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f))
             }
         }
@@ -128,7 +160,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (location != null) {
                     val latitude = location.latitude
                     val longitude = location.longitude
+                    //https://api.ebird.org/v2/ref/hotspot/geo?lat={{lat}}&lng={{lng}}
                     val url = "https://api.ebird.org/v2/data/obs/geo/recent?lat=$latitude&lng=$longitude&dist=10&key=$eBirdApiKey"
+                    //val url = "https://api.ebird.org/v2/ref/hotspot/geo?lat=$latitude&lng=$longitude&dist=10&key=$eBirdApiKey"
 
                     val request = StringRequest(
                         Request.Method.GET, url,
@@ -159,8 +193,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             for (i in 0 until jsonArray.length()) {
                 val hotspot = jsonArray.getJSONObject(i)
                 val lat = hotspot.getDouble("lat")
+                //hLat = lat
                 val lng = hotspot.getDouble("lng")
+                //hLong = lng
                 val name = hotspot.getString("locName")
+
+                locID = hotspot.getString("locId")
+
+                val hotspotInfo = HotspotInfo(name, locID, lat, lng)
+
+
+                //Toast.makeText(context, locName, Toast.LENGTH_SHORT).show()
+
+                hLat = lat
+                hLong = lng
+                //subNate2 = hotspot.getString("subnational2Code")
+                //locName = hotspot.getString("hierarchicalName")
 
                 val hotspotLocation = LatLng(lat, lng)
 
@@ -173,13 +221,54 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val marker = googleMap.addMarker(markerOptions)
 
                 if (marker != null) {
-                    marker.tag = name
+                    marker.tag = hotspotInfo
                 }
             }
         } catch (e: JSONException) {
             // Handle JSON parsing error
         }
     }
+    data class HotspotInfo(val hName:String, val locID: String, val hLat: Double, val hLong: Double)
+    fun getDets(locID: String)
+    {
+        val url = "https://api.ebird.org/v2/ref/hotspot/info/$locID?key=$eBirdApiKey"
+
+        val request = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    // Parse the JSON response
+                    //val jsonArray = JSONObject(response)
+                    //Log.d("Response", response)
+
+                    // Process the data as needed
+                    val hotspot = JSONObject(response)
+                    //val hotspot = jsonArray.getJSONObject()
+
+                    subNate2 = hotspot.getString("subnational2Code")
+                    locName = hotspot.getString("hierarchicalName")
+
+                    //Log.d("Response", subNate2)
+                    detsCallback?.onDetsCompleted()
+
+                } catch (e: JSONException) {
+                    // Handle JSON parsing error
+                    e.printStackTrace()
+                }
+            },
+            { error ->
+                // Handle error
+                error.printStackTrace()
+            }
+        )
+
+        requestQueue.add(request)
+    }
+
+    interface DetsCallback {
+        fun onDetsCompleted()
+    }
+
     override fun onResume() {
     super.onResume()
     mapView.onResume()
