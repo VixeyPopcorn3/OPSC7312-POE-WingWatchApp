@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -78,42 +79,11 @@ class HotspotDetsPage : AppCompatActivity() {
 
     }
     private fun updatePage() {
-        val url = "https://api.ebird.org/v2/product/spplist/$subNate2?key=$eBirdApiKey"
 
-        val request = StringRequest(
-            Request.Method.GET, url,
-            { response ->
-                try {
-                    // Parse the JSON response
-                    val jsonArray = JSONArray(response)
-
-                    // Process the data as needed
-                    val speciesList = ArrayList<String>()
-
-                    for (i in 0 until jsonArray.length()) {
-                        val species = jsonArray.getJSONObject(i).getString("comName")
-                        speciesList.add(species)
-                    }
-
-                    // Update the UI with the species list
-                    speciesTxt.text = speciesList.joinToString("\n")
-
-
-                } catch (e: JSONException) {
-                    // Handle JSON parsing error
-                    e.printStackTrace()
-                }
-            },
-            { error ->
-                // Handle error
-                error.printStackTrace()
-            }
-        )
-
-        requestQueue.add(request)
         nameTxt.text = hotspotName
         locationTxt.text = locName
         //locationDistTxt.text = calculateDistance().toString() + "km"
+        nearbyobs()
         locationDistTxt.text = String.format("%.2f km", calculateDistance())
     }
     private fun calculateDistance(
@@ -135,6 +105,86 @@ class HotspotDetsPage : AppCompatActivity() {
 
         // Calculate the distance in kilometers
         return earthRadius * c
+    }
+    // still code names to species codes
+    private fun speciesList()
+    {
+        val url = "https://api.ebird.org/v2/product/spplist/$subNate2?key=$eBirdApiKey"
+        //https://api.ebird.org/v2/data/obs/geo/recent?lat={{lat}}&lng={{lng}}??
+
+        val request = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    // Parse the JSON response
+                    val jsonArray = JSONArray(response)
+
+                    // Process the data as needed
+                    val speciesList = ArrayList<String>()
+
+                    for (i in 0 until jsonArray.length()) {
+                        val species = jsonArray.getString(i)
+                        speciesList.add(species)
+                        Log.d("Species", species)
+                    }
+
+                    // Update the UI with the species list
+                    speciesTxt.text = speciesList.joinToString("\n")
+
+
+                } catch (e: JSONException) {
+                    // Handle JSON parsing error
+                    e.printStackTrace()
+                }
+            },
+            { error ->
+                // Handle error
+                error.printStackTrace()
+            }
+        )
+
+        requestQueue.add(request)
+    }
+
+    private fun nearbyobs()
+    {
+        val url = "https://api.ebird.org/v2/data/obs/geo/recent?lat=$hLat&lng=$hLong&back=5&dist=20&hotspot=true&maxResults=50&key=$eBirdApiKey"
+        //https://api.ebird.org/v2/data/obs/geo/recent?lat=$hLat&lng=$hLong&back=5&dist=20&hotspot=true&maxResults=50&key=$eBirdApiKey
+        //https://api.ebird.org/v2/data/obs/geo/recent?lat={{lat}}&lng={{lng}}??
+
+        val request = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    // Parse the JSON response
+                    val jsonArray = JSONArray(response)
+
+                    // Process the data as needed
+                    val speciesList = ArrayList<String>()
+
+                    for (i in 0 until jsonArray.length()) {
+                        val j = jsonArray.getJSONObject(i)
+                        val species = j.getString("comName")
+                        speciesList.add(species)
+                        //Log.d("Species", species)
+                    }
+
+                    // Update the UI with the species list
+                    speciesTxt.text = speciesList.joinToString("\n")
+
+
+                } catch (e: JSONException) {
+                    // Handle JSON parsing error
+                    e.printStackTrace()
+                }
+            },
+            { error ->
+                // Handle error
+                error.printStackTrace()
+            }
+        )
+
+        requestQueue.add(request)
     }
 }
 
