@@ -1,17 +1,21 @@
 package com.example.opsc7312_poe_wingwatchapp
 
+import android.Manifest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.android.volley.Request
 import com.android.volley.RequestQueue
-import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONException
+import java.lang.Math.*
+import kotlin.math.pow
 
 class HotspotDetsPage : AppCompatActivity() {
 
@@ -21,6 +25,13 @@ class HotspotDetsPage : AppCompatActivity() {
     private lateinit var speciesTxt: TextView
     private lateinit var locationDistTxt: TextView
     private var loginId: Int = 0
+    private lateinit var subNate2: String
+    private lateinit var hotspotName: String
+    private lateinit var locName: String
+    private var hLat: Double = 0.0
+    private var hLong: Double = 0.0
+    private var uLat: Double = 0.0
+    private var uLong: Double = 0.0
 
     private lateinit var requestQueue: RequestQueue
     private val eBirdApiKey = "m1gcp6fdtt7b"
@@ -29,58 +40,25 @@ class HotspotDetsPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hotspot_dets_page)
 
+        requestQueue = Volley.newRequestQueue(this)
+
         loginId = intent.getIntExtra("loginId", 0)
-        val hotspotName = intent.getStringExtra("hotspot_name")
-        val userLatitude =  intent.getIntExtra("uLat", 0)/* Get user's latitude */
-        val userLongitude =  intent.getIntExtra("uLong", 0)/* Get user's longitude */
+        hotspotName = intent.getStringExtra("hotspot_name") ?: ""
+        subNate2 = intent.getStringExtra("subNate2") ?: ""
+        locName = intent.getStringExtra("locName") ?: ""
+        hLat =  intent.getDoubleExtra("hLat", 0.0)
+        hLong =  intent.getDoubleExtra("hLong", 0.0)
+        uLat =  intent.getDoubleExtra("uLat", 0.0)
+        uLong =  intent.getDoubleExtra("uLong", 0.0)
+
+        //Toast.makeText(this, subNate2, Toast.LENGTH_SHORT).show()
 
         nameTxt = findViewById<TextView>(R.id.Nametxt)
         locationTxt = findViewById<TextView>(R.id.Locationtxt)
         speciesTxt = findViewById<TextView>(R.id.DSpeciesFoundtxt)
         locationDistTxt = findViewById(R.id.DistanceFromtxt)
 
-        // Make a network request to eBird to get hotspot details
-        if (hotspotName != null) {
-            val url = "https://api.ebird.org/v2/ref/hotspot/info/$hotspotName?locale=en_US&fmt=json&key=$eBirdApiKey"
-            requestQueue = Volley.newRequestQueue(this)
 
-            val request = StringRequest(
-                Request.Method.GET, url,
-                Response.Listener<String> { response ->
-                    try {
-                        // Parse the JSON response
-                        val jsonObject = JSONArray(response).getJSONObject(0)
-                        val name = jsonObject.getString("locName")
-                        val location = jsonObject.getString("subnational2Name")
-                        val speciesFound = jsonObject.getString("speciesObserved")
-                        val hotspotLatitude = jsonObject.getDouble("lat")
-                        val hotspotLongitude = jsonObject.getDouble("lng")
-
-
-                        /*val distance = calculateDistance(
-                            userLatitude,
-                            userLongitude,
-                            hotspotLatitude,
-                            hotspotLongitude
-                        )*/
-
-                        // Update the UI with hotspot details
-                        nameTxt.text = "Name: $name"
-                        locationTxt.text = "Location: $location"
-                        speciesTxt.text = "Species Found: $speciesFound"
-                        //locationDistTxt.text = "Distance: $distance km"
-
-                    } catch (e: JSONException) {
-                        // Handle JSON parsing error
-                    }
-                },
-                Response.ErrorListener { error ->
-                    // Handle error
-                }
-            )
-
-            requestQueue.add(request)
-        }
         val Backbtn = findViewById<Button>(R.id.backbtn)
 
         Backbtn.setOnClickListener()
@@ -88,29 +66,75 @@ class HotspotDetsPage : AppCompatActivity() {
             startActivity(Intent(this@HotspotDetsPage, MainPageFrame::class.java).apply
             {
                 if (loginId != null) {
-                    intent.putExtra("loginId", loginId.toInt())
+                    intent.putExtra("loginId", loginId)
                 }
             })
             NewSightPage().finish()
         }
-        updatePage(hotspotName.toString())
+        updatePage()
     }
-    private fun updatePage(name: String)
+    private fun fetchBirdHotspots()
     {
 
     }
-    /*private fun calculateDistance(
-        lat1: Double,
-        lon1: Double,
-        lat2: Double,
-        lon2: Double
+    private fun updatePage() {
+        val url = "https://api.ebird.org/v2/product/spplist/$subNate2?key=$eBirdApiKey"
+
+        val request = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                try {
+                    // Parse the JSON response
+                    val jsonArray = JSONArray(response)
+
+                    // Process the data as needed
+                    val speciesList = ArrayList<String>()
+
+                    for (i in 0 until jsonArray.length()) {
+                        val species = jsonArray.getJSONObject(i).getString("comName")
+                        speciesList.add(species)
+                    }
+
+                    // Update the UI with the species list
+                    speciesTxt.text = speciesList.joinToString("\n")
+
+
+                } catch (e: JSONException) {
+                    // Handle JSON parsing error
+                    e.printStackTrace()
+                }
+            },
+            { error ->
+                // Handle error
+                error.printStackTrace()
+            }
+        )
+
+        requestQueue.add(request)
+        nameTxt.text = hotspotName
+        locationTxt.text = locName
+        //locationDistTxt.text = calculateDistance().toString() + "km"
+        locationDistTxt.text = String.format("%.2f km", calculateDistance())
+    }
+    private fun calculateDistance(
     ): Double {
-        val radius = 6371 // Earth's radius in kilometers
-        val dLat = Math.toRadians(lat2 - lat1)
-        val dLon = Math.toRadians(lon2 - lon1)
-        val a = sin(dLat / 2) * sin(dLat / 2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2)
+        val earthRadius = 6371 // Radius of the Earth in kilometers
+
+        // Convert latitude and longitude from degrees to radians
+        val uLatRad = Math.toRadians(uLat)
+        val uLongRad = Math.toRadians(uLong)
+        val hLatRad = Math.toRadians(hLat)
+        val hLongRad = Math.toRadians(hLong)
+
+        // Haversine formula
+        val dLat = hLatRad - uLatRad
+        val dLong = hLongRad - uLongRad
+
+        val a = sin(dLat / 2).pow(2) + cos(uLatRad) * cos(hLatRad) * sin(dLong / 2).pow(2)
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        return radius * c
-    }*/
+
+        // Calculate the distance in kilometers
+        return earthRadius * c
+    }
 }
 
