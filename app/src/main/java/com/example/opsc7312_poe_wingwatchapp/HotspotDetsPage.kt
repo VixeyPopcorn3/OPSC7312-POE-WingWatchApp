@@ -1,6 +1,5 @@
 package com.example.opsc7312_poe_wingwatchapp
 
-import android.Manifest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,11 +7,12 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import org.json.JSONArray
 import org.json.JSONException
 import java.lang.Math.*
@@ -25,6 +25,7 @@ class HotspotDetsPage : AppCompatActivity() {
     private lateinit var locationTxt: TextView
     private lateinit var speciesTxt: TextView
     private lateinit var locationDistTxt: TextView
+    private lateinit var unitsTxt: TextView
     private var loginId: Int = 0
     private lateinit var subNate2: String
     private lateinit var hotspotName: String
@@ -33,9 +34,13 @@ class HotspotDetsPage : AppCompatActivity() {
     private var hLong: Double = 0.0
     private var uLat: Double = 0.0
     private var uLong: Double = 0.0
+    private var userSetDist: Int = 0
+    private var userUnits: String = ""
 
     private lateinit var requestQueue: RequestQueue
     private val eBirdApiKey = "m1gcp6fdtt7b"
+
+    private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +63,7 @@ class HotspotDetsPage : AppCompatActivity() {
         locationTxt = findViewById<TextView>(R.id.Locationtxt)
         speciesTxt = findViewById<TextView>(R.id.DSpeciesFoundtxt)
         locationDistTxt = findViewById(R.id.DistanceFromtxt)
+        unitsTxt = findViewById(R.id.Unitstxt)
 
 
         val Backbtn = findViewById<Button>(R.id.backbtn)
@@ -67,10 +73,10 @@ class HotspotDetsPage : AppCompatActivity() {
             startActivity(Intent(this@HotspotDetsPage, MainPageFrame::class.java).apply
             {
                 if (loginId != null) {
-                    intent.putExtra("loginId", loginId)
+                    intent.putExtra("loginId", loginId.toInt())
                 }
             })
-            NewSightPage().finish()
+            HotspotDetsPage().finish()
         }
         updatePage()
     }
@@ -84,7 +90,7 @@ class HotspotDetsPage : AppCompatActivity() {
         locationTxt.text = locName
         //locationDistTxt.text = calculateDistance().toString() + "km"
         nearbyobs()
-        locationDistTxt.text = String.format("%.2f km", calculateDistance())
+        locationDistTxt.text = String.format("%.2f ", calculateDistance())
     }
     private fun calculateDistance(
     ): Double {
@@ -148,43 +154,81 @@ class HotspotDetsPage : AppCompatActivity() {
 
     private fun nearbyobs()
     {
-        val url = "https://api.ebird.org/v2/data/obs/geo/recent?lat=$hLat&lng=$hLong&back=5&dist=20&hotspot=true&maxResults=50&key=$eBirdApiKey"
-        //https://api.ebird.org/v2/data/obs/geo/recent?lat=$hLat&lng=$hLong&back=5&dist=20&hotspot=true&maxResults=50&key=$eBirdApiKey
-        //https://api.ebird.org/v2/data/obs/geo/recent?lat={{lat}}&lng={{lng}}??
+        getUserSettings(object : UserSettingsCallback {
+            override fun onUserSettingsFetched(userSetDist: String) {
+                val url =
+                    "https://api.ebird.org/v2/data/obs/geo/recent?lat=$hLat&lng=$hLong&back=5&dist=$userSetDist&hotspot=true&maxResults=50&key=$eBirdApiKey"
+                //https://api.ebird.org/v2/data/obs/geo/recent?lat=$hLat&lng=$hLong&back=5&dist=20&hotspot=true&maxResults=50&key=$eBirdApiKey
+                //https://api.ebird.org/v2/data/obs/geo/recent?lat={{lat}}&lng={{lng}}??
 
-        val request = StringRequest(
-            Request.Method.GET, url,
-            { response ->
-                try {
-                    // Parse the JSON response
-                    val jsonArray = JSONArray(response)
+                val request = StringRequest(
+                    Request.Method.GET, url,
+                    { response ->
+                        try {
+                            // Parse the JSON response
+                            val jsonArray = JSONArray(response)
 
-                    // Process the data as needed
-                    val speciesList = ArrayList<String>()
+                            // Process the data as needed
+                            val speciesList = ArrayList<String>()
 
-                    for (i in 0 until jsonArray.length()) {
-                        val j = jsonArray.getJSONObject(i)
-                        val species = j.getString("comName")
-                        speciesList.add(species)
-                        //Log.d("Species", species)
+                            for (i in 0 until jsonArray.length()) {
+                                val j = jsonArray.getJSONObject(i)
+                                val species = j.getString("comName")
+                                speciesList.add(species)
+                                //Log.d("Species", species)
+                            }
+
+                            // Update the UI with the species list
+                            speciesTxt.text = speciesList.joinToString("\n")
+
+
+                        } catch (e: JSONException) {
+                            // Handle JSON parsing error
+                            e.printStackTrace()
+                        }
+                    },
+                    { error ->
+                        // Handle error
+                        error.printStackTrace()
                     }
+                )
 
-                    // Update the UI with the species list
-                    speciesTxt.text = speciesList.joinToString("\n")
-
-
-                } catch (e: JSONException) {
-                    // Handle JSON parsing error
-                    e.printStackTrace()
-                }
-            },
-            { error ->
-                // Handle error
-                error.printStackTrace()
+                requestQueue.add(request)
             }
-        )
+        })
+    }
+    private fun getUserSettings(callback: UserSettingsCallback) {
+        val settingsRef = db.collection("Settings")
 
-        requestQueue.add(request)
+        settingsRef.whereEqualTo("LoginID", loginId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val document = documents.first()
+                    val distance = document.getLong("Distance")
+                    val units = document.getString("Units")
+
+                    if (distance != null && units != null) {
+                        if (units.equals("m", ignoreCase = true)) {
+                            unitsTxt.text = "m"
+                            // Convert miles to kilometers
+                            userSetDist = (distance * 1.60934).toInt()
+                            callback.onUserSettingsFetched(userSetDist.toString())
+                        } else if (units.equals("Km", ignoreCase = true)) {
+                            // Use the original distance if units are not "m"
+                            unitsTxt.text = "Km"
+                            callback.onUserSettingsFetched(distance.toString())
+
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Failed to retrieve settings: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+    interface UserSettingsCallback {
+        fun onUserSettingsFetched(userSetDist: String)
     }
 }
 
