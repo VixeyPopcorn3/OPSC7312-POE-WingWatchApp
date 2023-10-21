@@ -26,6 +26,8 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -45,6 +47,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var hLat: Double = 0.0
     private var hLong: Double = 0.0
     private var detsCallback: DetsCallback? = null
+    private var userSetDist: Int = 0
+    private var userUnits: String = ""
+
+    private val db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +73,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val intent = Intent(requireContext(), NewSightPage::class.java)
             intent.putExtra("loginId", loginId)
             startActivity(intent)
+            activity?.finish()
         }
         return view
     }
@@ -153,37 +160,41 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun fetchBirdHotspots() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location: Location? ->
-                if (location != null) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    //https://api.ebird.org/v2/ref/hotspot/geo?lat={{lat}}&lng={{lng}}
-                    val url = "https://api.ebird.org/v2/data/obs/geo/recent?lat=$latitude&lng=$longitude&dist=10&key=$eBirdApiKey"
-                    //val url = "https://api.ebird.org/v2/ref/hotspot/geo?lat=$latitude&lng=$longitude&dist=10&key=$eBirdApiKey"
+        getUserSettings(object : UserSettingsCallback {
+            override fun onUserSettingsFetched(userSetDist: String) {
+                Log.d("dist", userSetDist)
 
-                    val request = StringRequest(
-                        Request.Method.GET, url,
-                        { response ->
-                            addBirdHotspotsToMap(response)
-                        },
-                        { error ->
-                            // Handle error
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
+                    fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location: Location? ->
+                        if (location != null) {
+                            val latitude = location.latitude
+                            val longitude = location.longitude
+                            val url = "https://api.ebird.org/v2/data/obs/geo/recent?lat=$latitude&lng=$longitude&dist=$userSetDist&key=$eBirdApiKey"
+
+                            val request = StringRequest(
+                                Request.Method.GET, url,
+                                { response ->
+                                    addBirdHotspotsToMap(response)
+                                },
+                                { error ->
+                                    // Handle error
+                                }
+                            )
+
+                            requestQueue.add(request)
                         }
+                    }
+                } else {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        1
                     )
-
-                    requestQueue.add(request)
                 }
             }
-        } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1
-            )
-        }
+        })
     }
 
     private fun addBirdHotspotsToMap(jsonResponse: String) {
@@ -265,6 +276,37 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         requestQueue.add(request)
     }
 
+    private fun getUserSettings(callback: UserSettingsCallback) {
+        val settingsRef = db.collection("Settings")
+
+        settingsRef.whereEqualTo("LoginID", loginId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val document = documents.first()
+                    val distance = document.getLong("Distance")
+                    val units = document.getString("Units")
+
+                    if (distance != null && units != null) {
+                        if (units.equals("m", ignoreCase = true)) {
+                            // Convert miles to kilometers
+                            userSetDist = (distance * 1.60934).toInt()
+                            callback.onUserSettingsFetched(userSetDist.toString())
+                        } else if (units.equals("Km", ignoreCase = true)) {
+                            // Use the original distance if units are not "m"
+                            callback.onUserSettingsFetched(distance.toString())
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(context, "Failed to retrieve settings: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+    interface UserSettingsCallback {
+        fun onUserSettingsFetched(userSetDist: String)
+    }
+
     interface DetsCallback {
         fun onDetsCompleted()
     }
@@ -272,34 +314,34 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
     super.onResume()
     mapView.onResume()
-}
+    }
 
-override fun onPause() {
-    super.onPause()
-    mapView.onPause()
-}
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
 
-override fun onDestroy() {
-    super.onDestroy()
-    mapView.onDestroy()
-}
-override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<out String>,
-    grantResults: IntArray
-) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-        1 -> {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, perform your actions here
-                getMyLocation()
-                fetchBirdHotspots()
-            } else {
-                // Permission denied, handle accordingly
-                Toast.makeText(context, "Location permission denied.", Toast.LENGTH_SHORT).show()
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted, perform your actions here
+                    getMyLocation()
+                    fetchBirdHotspots()
+                } else {
+                    // Permission denied, handle accordingly
+                    Toast.makeText(context, "Location permission denied.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
-}
 }

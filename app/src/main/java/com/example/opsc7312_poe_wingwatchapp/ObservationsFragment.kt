@@ -55,7 +55,7 @@ class ObservationsFragment : Fragment() {
 
             startActivity(intent)
             // Finish the current activity to close it
-            MainPageFrame().finish()
+            activity?.finish()
         }
 
         val caltxt = view.findViewById<TextView>(R.id.caltxt)
