@@ -2,6 +2,7 @@ package com.example.opsc7312_poe_wingwatchapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -27,6 +28,7 @@ class NewSightPage : AppCompatActivity() {
         setContentView(R.layout.activity_new_sight_page)
 
         loginId = intent.getIntExtra("loginId", 0)
+        //Log.d("login", loginId.toString())
 
         speciesNameTxt = findViewById<EditText>(R.id.SpeciesNameEtxt)
         hotspotTxt = findViewById<EditText>(R.id.HotspotEtxt)
@@ -37,13 +39,16 @@ class NewSightPage : AppCompatActivity() {
 
         Backbtn.setOnClickListener()
         {
-            startActivity(Intent(this@NewSightPage, MainPageFrame::class.java).apply
-            {
-                if (loginId != null) {
-                    intent.putExtra("loginId", loginId.toInt())
-                }
-            })
-            NewSightPage().finish()
+            val intent = Intent(this@NewSightPage, MainPageFrame::class.java)
+
+            if (loginId != null) {
+                val bundle = Bundle()
+                bundle.putInt("loginId", loginId)
+                intent.putExtras(bundle)
+            }
+
+            startActivity(intent)
+            finish()
         }
         val Savebtn = findViewById<Button>(R.id.Savebtn)
 
@@ -77,12 +82,15 @@ class NewSightPage : AppCompatActivity() {
         observationsCollection.add(observation)
             .addOnSuccessListener { documentReference ->
                 Toast.makeText(this, "Observation added: ${documentReference.id}", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this@NewSightPage, MainPageFrame::class.java).apply
-                {
-                    if (loginId != null) {
-                        intent.putExtra("loginId", loginId.toInt())
-                    }
-                })
+                val intent = Intent(this@NewSightPage, MainPageFrame::class.java)
+
+                if (loginId != null) {
+                    val bundle = Bundle()
+                    bundle.putInt("loginId", loginId)
+                    intent.putExtras(bundle)
+                }
+
+                startActivity(intent)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error adding observation: $e", Toast.LENGTH_SHORT).show()

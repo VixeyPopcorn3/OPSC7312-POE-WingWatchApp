@@ -56,6 +56,7 @@ class HotspotDetsPage : AppCompatActivity() {
         hLong =  intent.getDoubleExtra("hLong", 0.0)
         uLat =  intent.getDoubleExtra("uLat", 0.0)
         uLong =  intent.getDoubleExtra("uLong", 0.0)
+        Log.d("login", loginId.toString())
 
         //Toast.makeText(this, subNate2, Toast.LENGTH_SHORT).show()
 
@@ -70,13 +71,16 @@ class HotspotDetsPage : AppCompatActivity() {
 
         Backbtn.setOnClickListener()
         {
-            startActivity(Intent(this@HotspotDetsPage, MainPageFrame::class.java).apply
-            {
-                if (loginId != null) {
-                    intent.putExtra("loginId", loginId.toInt())
-                }
-            })
-            HotspotDetsPage().finish()
+            val intent = Intent(this@HotspotDetsPage, MainPageFrame::class.java)
+
+            if (loginId != null) {
+                val bundle = Bundle()
+                bundle.putInt("loginId", loginId)
+                intent.putExtras(bundle)
+            }
+
+            startActivity(intent)
+            finish()
         }
         updatePage()
     }
