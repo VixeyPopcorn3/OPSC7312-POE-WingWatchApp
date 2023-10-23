@@ -3,6 +3,7 @@ package com.example.opsc7312_poe_wingwatchapp
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,8 @@ class ObservationsFragment : Fragment() {
     private val observationsList: MutableList<Observations> = mutableListOf()
 
     private var selectedDate: String? = null
-    private var selectedLocation: String? = null
+    private var selectedLocation: String? = ""
+    private lateinit var caltxt: TextView
 
     private var loginId: Int = 0
     private val db = Firebase.firestore
@@ -58,7 +60,22 @@ class ObservationsFragment : Fragment() {
             activity?.finish()
         }
 
-        val caltxt = view.findViewById<TextView>(R.id.caltxt)
+        // Initialize the Spinner
+        spinner = view.findViewById(R.id.LocationSpinner)
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                // Store the selected location
+                selectedLocation = parent.getItemAtPosition(position).toString()
+                //Log.d("Loc", selectedLocation.toString())
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Handle nothing selected if needed
+                selectedLocation = null
+            }
+        }
+
+        caltxt = view.findViewById<TextView>(R.id.caltxt)
         val calendarBtn = view.findViewById<Button>(R.id.calendarbtn)
 
         // Set an OnClickListener for the calendar button
@@ -67,17 +84,17 @@ class ObservationsFragment : Fragment() {
         }
 
         val filterBtn = view.findViewById<Button>(R.id.Filterbtn)
+        //Log.d("Loc", "x" + spinner.selectedItem.toString()?: "")
 
         // Set an OnClickListener for the filter button
         filterBtn.setOnClickListener {
             selectedDate = caltxt.text.toString()
-            selectedLocation = spinner.selectedItem.toString()
+            if(spinner.selectedItem != null)
+            {
+                selectedLocation = spinner.selectedItem.toString()
+            }
             filter()
         }
-
-        // Initialize the Spinner
-        spinner = view.findViewById(R.id.LocationSpinner)
-        fetchLocationfromDb()
 
         // Call fetchObservations to populate the observationsList
         fetchObservations()
@@ -107,17 +124,26 @@ class ObservationsFragment : Fragment() {
         datePickerDialog.show()
     }
 
-    private fun filter()
-    {
+private fun filter() {
+    val date = caltxt.text.toString()
+    val location = selectedLocation ?: ""
+
+    // Check if both date and location are not null or empty
+    if (!date.isNullOrBlank() && !location.isNullOrBlank()) {
         // Filter the observations based on selected date and location
         val filteredObservations = observationsList.filter { observation ->
-            (selectedDate.isNullOrBlank() || observation.dateSeen == selectedDate) &&
-                    (selectedLocation.isNullOrBlank() || observation.locationSeen == selectedLocation)
-
+            (selectedDate.isNullOrBlank() || observation.dateSeen == date) &&
+                    (selectedLocation.isNullOrBlank() || observation.locationSeen == location)
         }
-            // Update the adapter with filtered observations
-            observationAdapter.updateData(filteredObservations)
+        // Update the adapter with filtered observations
+        observationAdapter.updateData(filteredObservations)
+    } else {
+        // Handle the case when no filters are selected
+        Toast.makeText(context, "Please select at least one filter", Toast.LENGTH_SHORT).show()
     }
+}
+
+
     private fun fetchLocationfromDb()
     {
         // Fetch "Hotspot" values from the "Observations" collection for the specific loginId
@@ -161,36 +187,6 @@ class ObservationsFragment : Fragment() {
             }
         }
     }
-
-        //fetches observations where saved
-        /*private fun fetchObservations() {
-            // Clear the existing observations
-            observationsList.clear()
-
-            // Fetch observations from Firestore for the specific loginId
-            db.collection("Observations")
-                .whereEqualTo("LoginID", loginId)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    for (document in querySnapshot) {
-                        val species = document.getString("SpeciesName")
-                        val locationSeen = document.getString("Hotspot")
-                        val dateSeen = document.getString("DateSeen")
-                        val behaviour = document.getString("Behaviour")
-
-                        if (species != null && locationSeen != null && dateSeen != null && behaviour != null) {
-                            val observation = Observations(species, locationSeen, dateSeen, behaviour, loginId)
-                            observationsList.add(observation)
-                        }
-                    }
-
-                    // Notify the adapter that the data has changed
-                    observationAdapter.notifyDataSetChanged()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(context, "Error in loading observations: $e", Toast.LENGTH_SHORT).show()
-                }
-        }*/
         private fun fetchObservations() {
             // Clear the existing observations
             observationsList.clear()

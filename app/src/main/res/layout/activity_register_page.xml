@@ -61,7 +61,6 @@
                     android:layout_marginLeft="5dp"
                     android:ems="10"
                     android:fontFamily="@font/alfa_slab_one"
-                    android:inputType="textPersonName"
                     android:text="Email:"
                     android:textColor="#000000"
                     android:textSize="18dp" />
