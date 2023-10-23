@@ -39,6 +39,7 @@ class ObservationsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_observations2, container, false)
 
         loginId = arguments?.getInt("loginId") ?: 0
+        Log.d("login obs frag", loginId.toString())
 
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -52,7 +53,8 @@ class ObservationsFragment : Fragment() {
 
             val fragment = ObservationsFragment()
             val bundle = Bundle()
-            bundle.putInt("loginId", loginId.toInt()) // Cast loginId to an integer
+            bundle.putInt("loginId", loginId) // Cast loginId to an integer
+            intent.putExtras(bundle)
             fragment.arguments = bundle
 
             startActivity(intent)
@@ -98,6 +100,7 @@ class ObservationsFragment : Fragment() {
 
         // Call fetchObservations to populate the observationsList
         fetchObservations()
+        fetchLocationfromDb()
 
         return view
     }

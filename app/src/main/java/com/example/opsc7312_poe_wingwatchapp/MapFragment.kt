@@ -66,6 +66,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         requestQueue = Volley.newRequestQueue(requireContext())
 
         loginId = arguments?.getInt("loginId") ?: 0
+        Log.d("login frag", loginId.toString())
 
         val newSightbtn = view.findViewById<Button>(R.id.newSightbtn)
         newSightbtn.setOnClickListener {
@@ -114,6 +115,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                         intent.putExtras(extras)
                         startActivity(intent)
+                        activity?.finish()
                     }
                 }
                 // Return 'true' to indicate that you've handled the click event
