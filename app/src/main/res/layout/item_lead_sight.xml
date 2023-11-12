@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/rounded_corners">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/leadUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/berkshire_swash"
+                android:text="Sally Salmon"
+                android:textColor="#000000"
+                android:textSize="27sp" />
+
+            <TextView
+                android:id="@+id/leadUserAchie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5sp"
+                android:fontFamily="@font/berkshire_swash"
+                android:text="Elite"
+                android:textColor="#000000"
+                android:textSize="27sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/speciesMedal2"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/medals" />
+
+        <TextView
+            android:id="@+id/leadUserName3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/berkshire_swash"
+            android:text="150"
+            android:textColor="#000000"
+            android:textSize="27sp" />
+    </LinearLayout>
+
+</FrameLayout>

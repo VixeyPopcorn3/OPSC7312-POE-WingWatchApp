@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,176 +8,195 @@
     android:orientation="vertical"
     tools:context=".ComandAchieFragment">
 
-    <TextView
-        android:id="@+id/comandAchieH"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:fontFamily="@font/lobster"
-        android:text="Community  &amp;  Achievements"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="55dp" />
-
-    <TextView
-        android:id="@+id/userNametxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/berkshire_swash"
-        android:text="Billy"
-        android:textColor="#000000"
-        android:textSize="30sp" />
-
     <LinearLayout
-        android:id="@+id/linlaySpecies"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/userSpeciestxt"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/berkshire_swash"
-            android:text="Species:           45"
-            android:textColor="#000000"
-            android:textSize="27sp" />
-
-        <ImageView
-            android:id="@+id/speciesMedal"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_weight="1"
-            android:src="@drawable/medals" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linlaySight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/userSighttxt"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/berkshire_swash"
-            android:text="Sightings:       56"
-            android:textColor="#000000"
-            android:textSize="27sp" />
-
-        <ImageView
-            android:id="@+id/sightMedal"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_weight="1"
-            android:src="@drawable/medals" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linlayLeaderboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:background="#a0bff0"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/leaderboardH"
+            android:id="@+id/comandAchieH"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/lobster"
+            android:text="Community  &amp;  Achievements"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="55dp" />
+
+        <TextView
+            android:id="@+id/userNametxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/berkshire_swash"
+            android:text="Billy"
+            android:textColor="#000000"
+            android:textSize="30sp" />
+
+        <LinearLayout
+            android:id="@+id/linlaySpecies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/userSpeciestxt"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/berkshire_swash"
+                android:text="Species:           45"
+                android:textColor="#000000"
+                android:textSize="27sp" />
+
+            <ImageView
+                android:id="@+id/speciesMedal"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:src="@drawable/medals" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linlaySight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/userSighttxt"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/berkshire_swash"
+                android:text="Sightings:       56"
+                android:textColor="#000000"
+                android:textSize="27sp" />
+
+            <ImageView
+                android:id="@+id/sightMedal"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:src="@drawable/medals" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linlayLeaderboard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/lobster"
-            android:text="Leaderboard"
-            android:textColor="#000000"
-            android:textSize="45sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/leadSpeciesHtxt2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/lobster"
-                android:text="Birdie"
-                android:textColor="#000000"
-                android:textSize="32sp" />
-
-            <TextView
-                android:id="@+id/leadSpeciesHtxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:fontFamily="@font/lobster"
-                android:text="Species"
-                android:textColor="#000000"
-                android:textSize="32sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linlayLeaderSpecies"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="10dp"
+            android:background="#a0bff0"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/leaderboardH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/lobster"
+                android:text="Leaderboard"
+                android:textColor="#000000"
+                android:textSize="45sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/leadSpeciesHtxt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lobster"
+                    android:text="Birdie"
+                    android:textColor="#000000"
+                    android:textSize="32sp" />
+
+                <TextView
+                    android:id="@+id/leadSpeciesHtxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:fontFamily="@font/lobster"
+                    android:text="Species"
+                    android:textColor="#000000"
+                    android:textSize="32sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linlayLeaderSpecies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/leadSpeciesRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/item_lead_species" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/leadSightHtxt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lobster"
+                    android:text="Birdie"
+                    android:textColor="#000000"
+                    android:textSize="32sp" />
+
+                <TextView
+                    android:id="@+id/leadSightHtxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:fontFamily="@font/lobster"
+                    android:text="Sightings"
+                    android:textColor="#000000"
+                    android:textSize="32sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linlayLeaderSight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/leadSightRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/item_lead_sight" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/leadSightHtxt2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/lobster"
-                android:text="Birdie"
-                android:textColor="#000000"
-                android:textSize="32sp" />
-
-            <TextView
-                android:id="@+id/leadSightHtxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:fontFamily="@font/lobster"
-                android:text="Sightings"
-                android:textColor="#000000"
-                android:textSize="32sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linlayLeaderSight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="15dp"
-            android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>
