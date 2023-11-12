@@ -52,7 +52,9 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="0dp"
                 android:layout_weight="1"
-                android:backgroundTint="#000000"
+                android:backgroundTint="@color/black"
+                android:dropDownSelector="@color/purple_700"
+                android:foregroundTint="#9C27B0"
                 android:spinnerMode="dropdown"
                 android:textAlignment="textEnd" />
         </LinearLayout>

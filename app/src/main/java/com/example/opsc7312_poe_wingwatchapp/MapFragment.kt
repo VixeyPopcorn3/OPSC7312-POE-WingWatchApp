@@ -34,6 +34,8 @@ import com.google.firebase.ktx.Firebase
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.Math.*
+import kotlin.math.asin
 import kotlin.math.pow
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -97,11 +99,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             if (hotspotInfo != null) {
                 hotspotName = hotspotInfo.hName
-                val distance = calculateDistance(hotspotInfo.hLat, hotspotInfo.hLong)
+                //val distance = calculateDistance(hotspotInfo.hLat, hotspotInfo.hLong)
 
                 // Show the hotspot information in a custom view
                 //showHotspotInfoView(hotspotName, distance)
-                val infoView = showHotspotInfoView(hotspotName, distance)
+                val infoView = showHotspotInfoView(hotspotInfo)
 
                 // Set this view as the info window for the marker
                 googleMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
@@ -169,16 +171,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
-    private fun showHotspotInfoView(hotspotName: String, distance: Double): View {
+    private fun showHotspotInfoView(hotspotInfo: HotspotInfo): View {
         val view = layoutInflater.inflate(R.layout.info_window_layout, null)
 
         val nameTextView = view.findViewById<TextView>(R.id.info_window_title)
         val distanceTextView = view.findViewById<TextView>(R.id.info_window_distance)
 
-        nameTextView.text = hotspotName
-        Log.d("distance", distance.toString())
+        nameTextView.text = hotspotInfo.hName
+        Log.d("distance", hotspotInfo.distance.toString())
 
-        val  dist = String.format("%.2f ",distance)
+        val  dist = String.format("%.2f ",hotspotInfo.distance)
         distanceTextView.text = "Distance: ${dist} Km" // You can format this as needed
 
 
@@ -273,7 +275,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                 locID = hotspot.getString("locId")
 
-                val hotspotInfo = HotspotInfo(name, locID, lat, lng)
+                val distance = calculateDistance(lat, lng)
+                val hotspotInfo = HotspotInfo(name, locID, lat, lng, distance)
 
 
                 //Toast.makeText(context, locName, Toast.LENGTH_SHORT).show()
@@ -314,7 +317,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 hLat = lat
                 hLong = lng
 
-                val hotspotInfo = HotspotInfo(name, locID, lat, lng)
+                val distance = calculateDistance(lat, lng)
+                val hotspotInfo = HotspotInfo(name, locID, lat, lng, distance)
                 val hotspotLocation = LatLng(lat, lng)
 
                 // Customize the marker as needed
@@ -362,29 +366,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun calculateDistance(hotLat: Double, lotLong: Double
+    private fun calculateDistance(hotLat: Double, hotLong: Double
     ): Double {
         val earthRadius = 6371 // Radius of the Earth in kilometers
 
         // Convert latitude and longitude from degrees to radians
-        val uLatRad = Math.toRadians(uLat)
-        val uLongRad = Math.toRadians(uLong)
-        val hLatRad = Math.toRadians(hLat)
-        val hLongRad = Math.toRadians(hLong)
+        val lat1 = Math.toRadians(uLat)
+        val lon1 = Math.toRadians(uLong)
+        val lat2 = Math.toRadians(hotLat)
+        val lon2 = Math.toRadians(hotLong)
+
 
         // Haversine formula
-        val dLat = hLatRad - uLatRad
-        val dLong = hLongRad - uLongRad
+        val dLon = lon2 - lon1
+        val dLat = lat2 - lat1
 
-        val a = Math.sin(dLat / 2)
-            .pow(2) + Math.cos(uLatRad) * Math.cos(hLatRad) * Math.sin(dLong / 2).pow(2)
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        val a = sin(dLat / 2).pow(2) + cos(lat1) * cos(lat2) * sin(dLon / 2).pow(2)
+        val c = 2 * asin(sqrt(a))
 
         // Calculate the distance in kilometers
         return earthRadius * c
     }
 
-    data class HotspotInfo(val hName:String, val locID: String, val hLat: Double, val hLong: Double)
+    data class HotspotInfo(val hName:String, val locID: String, val hLat: Double, val hLong: Double, val distance: Double)
     fun getDets(locID: String)
     {
         val url = "https://api.ebird.org/v2/ref/hotspot/info/$locID?key=$eBirdApiKey"

@@ -29,7 +29,8 @@ class ProfandSetFragment : Fragment() {
     private val db = Firebase.firestore
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profand_set, container, false)
@@ -39,19 +40,6 @@ class ProfandSetFragment : Fragment() {
         usernameTxt = view.findViewById<TextView>(R.id.Usernametxt)
         emailTxt = view.findViewById<TextView>(R.id.Emailtxt)
         fetchDistanceAndUnits()
-
-        /* Initialize the Spinner
-        spinner = view.findViewById(R.id.Units_spinner)
-        // Define an ArrayAdapter for the Spinner
-        val unitsAdapter = ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.units_array, // Create this array in your strings.xml
-            android.R.layout.simple_spinner_item
-        )
-        // Set the dropdown view resource
-        unitsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        // Set the ArrayAdapter to the Spinner
-        spinner.adapter = unitsAdapter*/
 
         // Initialize the Spinner
         spinner = view.findViewById(R.id.Units_spinner)
@@ -89,9 +77,10 @@ class ProfandSetFragment : Fragment() {
             }
         }
 
-
+        // Initialize the SeekBar
         seekBar = view.findViewById(R.id.seekBar)
         distanceUnitsEtxt = view.findViewById(R.id.DistanceUnitsEtxt)
+
 
         // Add a listener to the SeekBar
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -137,6 +126,7 @@ class ProfandSetFragment : Fragment() {
 
                     settingsRef.add(newSettingsData)
                         .addOnSuccessListener {
+                            seekBar.progress = dist
                             Toast.makeText(context, "Applied Successfully", Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener { e ->
@@ -153,6 +143,7 @@ class ProfandSetFragment : Fragment() {
                     settingsRef.document(document.id)
                         .update(settingsData as HashMap<String, Any>)
                         .addOnSuccessListener {
+                            seekBar.progress = dist
                             Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener { e ->
@@ -184,6 +175,7 @@ class ProfandSetFragment : Fragment() {
                             // Find the index of the desired value in the array
                             val index = unitsArray.indexOf("Imperial")
                             setSeekBarMax("m")
+                            seekBar.progress = distance.toInt()
 
                             // Set the spinner selection to the index
                             spinner.setSelection(index)
@@ -193,6 +185,7 @@ class ProfandSetFragment : Fragment() {
                             // Find the index of the desired value in the array
                             val index = unitsArray.indexOf("Metric")
                             setSeekBarMax("Km")
+                            seekBar.progress = distance.toInt()
 
                             // Set the spinner selection to the index
                             spinner.setSelection(index)

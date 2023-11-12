@@ -63,6 +63,7 @@ tools:context=".ProfandSetFragment">
         android:layout_marginTop="0dp"
         android:backgroundTint="#000000"
         android:dropDownSelector="@color/black"
+        android:foregroundTint="#000000"
         android:spinnerMode="dropdown"
         android:textAlignment="textEnd" />
 
@@ -82,7 +83,10 @@ tools:context=".ProfandSetFragment">
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:backgroundTint="#000000"
-        android:max="500"/>
+        android:foregroundTint="#000000"
+        android:max="500"
+        android:progressBackgroundTint="#000000"
+        android:progressTint="#000000" />
 
     <LinearLayout
         android:id="@+id/relativeLayout"
