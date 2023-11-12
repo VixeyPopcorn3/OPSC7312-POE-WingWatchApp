@@ -3,12 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/whitebackground"
     tools:context=".JournalFragment">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:backgroundTint="@color/black"
-        android:text="@string/UnderCon"
-        android:textSize="60sp" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/JounalH"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/lobster"
+            android:text="Journal"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="65sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            tools:listitem="@layout/item_journal" />
+    </LinearLayout>
+
 </FrameLayout>
