@@ -25,10 +25,10 @@
                 android:fontFamily="@font/berkshire_swash"
                 android:text="Sally Salmon"
                 android:textColor="#000000"
-                android:textSize="27sp" />
+                android:textSize="23sp" />
 
             <TextView
-                android:id="@+id/leadUserAchie"
+                android:id="@+id/leadUserClass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
@@ -37,13 +37,13 @@
                 android:fontFamily="@font/berkshire_swash"
                 android:text="Elite"
                 android:textColor="#000000"
-                android:textSize="27sp" />
+                android:textSize="21sp" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/speciesMedal2"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:src="@drawable/medals" />
 
@@ -52,12 +52,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
             android:fontFamily="@font/berkshire_swash"
             android:text="150"
             android:textColor="#000000"
-            android:textSize="27sp" />
+            android:textSize="22sp" />
     </LinearLayout>
 
 </FrameLayout>

@@ -87,6 +87,8 @@ class RegisterPage : AppCompatActivity() {
                                     "Username" to username,
                                     "LoginID" to newLoginID,
                                     "UID" to uid,
+                                    "Sight" to 0,
+                                    "Species" to 0,
                                     "Email" to email
                                 )
 
