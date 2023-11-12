@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Outer medal -->
+    <item>
+        <bitmap android:src="@drawable/medalouter" />
+    </item>
+    <!-- Inner circle -->
+    <item android:top="57dp" android:bottom="178dp" android:left="120dp" android:right="110dp">
+        <shape android:shape="oval">
+            <solid android:color="#FF0000" /> <!-- Change this to set the circle color -->
+        </shape>
+    </item>
+</layer-list>
