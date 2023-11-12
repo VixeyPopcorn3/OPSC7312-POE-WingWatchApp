@@ -22,13 +22,41 @@
             android:textColor="@color/black"
             android:textSize="65sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
+            android:id="@+id/journalLay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                tools:listitem="@layout/item_journal" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/newEntrybtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/journalLay"
+            android:layout_gravity="right"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="10dp"
-            tools:listitem="@layout/item_journal" />
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="#000000"
+            android:fontFamily="@font/alfa_slab_one"
+            android:rotation="4"
+            android:rotationX="8"
+            android:rotationY="-8"
+            android:text="New Entry"
+            android:textColor="#000000"
+            android:textSize="14dp" />
     </LinearLayout>
 
 </FrameLayout>
