@@ -1,9 +1,15 @@
 package com.example.opsc7312_poe_wingwatchapp
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -19,8 +25,11 @@ class NewSightPage : AppCompatActivity() {
     private lateinit var hotspotTxt: TextView
     private lateinit var behaviourTxt: TextView
     private lateinit var notesTxt: TextView
+    private lateinit var checkCurrentLoc: CheckBox
+    private var isCurrentLocation: Boolean = false
 
     private var loginId: Int = 0
+    private lateinit var currentLoc:String
     private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +43,35 @@ class NewSightPage : AppCompatActivity() {
         hotspotTxt = findViewById<EditText>(R.id.HotspotEtxt)
         behaviourTxt = findViewById<EditText>(R.id.BehaviourEtxt)
         notesTxt = findViewById<EditText>(R.id.NotesEtxt)
+
+        checkCurrentLoc = findViewById<CheckBox>(R.id.YesCurrentcheckBox)
+        checkCurrentLoc.setOnCheckedChangeListener { _, isChecked ->
+            // Update the isCurrentLocation variable based on checkbox state
+            isCurrentLocation = isChecked
+        }
+
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationListener: LocationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                // This method gets called whenever the location updates
+                val latitude = location.latitude
+                val longitude = location.longitude
+                currentLoc = latitude.toString() + "|" + longitude
+                // Now you have the latitude and longitude
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            //override fun onProviderEnabled(provider: String?) {}
+            //override fun onProviderDisabled(provider: String?) {}
+        }
+
+        // Check for permissions
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Request location updates
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, locationListener)
+        }
 
         val Backbtn = findViewById<Button>(R.id.backbtn)
 
@@ -62,12 +100,12 @@ class NewSightPage : AppCompatActivity() {
             if (species.isEmpty() || hotspot.isEmpty() || behaviour.isEmpty() || notes.isEmpty()) {
                 Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show()
             } else {
-                saveObservation(species, hotspot, behaviour, notes, loginId)
+                saveObservation(species, hotspot, behaviour, notes, loginId, isCurrentLocation)
             }
         }
     }
 
-    private fun saveObservation(species: String, hotspot: String, behaviour: String, notes: String, loginID: Int) {
+    private fun saveObservation(species: String, hotspot: String, behaviour: String, notes: String, loginID: Int, isCurrentLocation: Boolean) {
         val dateSeen = getCurrentDateAsString()
 
         val observationsCollection = db.collection("Observations")
@@ -101,6 +139,10 @@ class NewSightPage : AppCompatActivity() {
                                     "DateSeen" to dateSeen
                                 )
 
+                                if (isCurrentLocation) {
+                                    observation["currentLoc"] = currentLoc
+                                }
+
                                 observationsCollection.add(observation)
                                     .addOnSuccessListener { documentReference ->
                                         Toast.makeText(this, "Observation added: ${documentReference.id}", Toast.LENGTH_SHORT).show()
@@ -125,6 +167,9 @@ class NewSightPage : AppCompatActivity() {
                         "LoginID" to loginID,
                         "DateSeen" to dateSeen
                     )
+                    if (isCurrentLocation) {
+                        observation["currentLoc"] = currentLoc
+                    }
 
                     observationsCollection.add(observation)
                         .addOnSuccessListener { documentReference ->

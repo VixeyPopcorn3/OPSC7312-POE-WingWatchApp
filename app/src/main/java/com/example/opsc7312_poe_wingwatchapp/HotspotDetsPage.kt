@@ -101,17 +101,17 @@ class HotspotDetsPage : AppCompatActivity() {
         val earthRadius = 6371 // Radius of the Earth in kilometers
 
         // Convert latitude and longitude from degrees to radians
-        val uLatRad = Math.toRadians(uLat)
-        val uLongRad = Math.toRadians(uLong)
-        val hLatRad = Math.toRadians(hLat)
-        val hLongRad = Math.toRadians(hLong)
+        val lat1 = Math.toRadians(uLat)
+        val lon1 = Math.toRadians(uLong)
+        val lat2 = Math.toRadians(hLat)
+        val lon2 = Math.toRadians(hLong)
 
         // Haversine formula
-        val dLat = hLatRad - uLatRad
-        val dLong = hLongRad - uLongRad
+        val dLon = lon2 - lon1
+        val dLat = lat2 - lat1
 
-        val a = sin(dLat / 2).pow(2) + cos(uLatRad) * cos(hLatRad) * sin(dLong / 2).pow(2)
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        val a = sin(dLat / 2).pow(2) + cos(lat1) * cos(lat2) * sin(dLon / 2).pow(2)
+        val c = 2 * kotlin.math.asin(sqrt(a))
 
         // Calculate the distance in kilometers
         return earthRadius * c
