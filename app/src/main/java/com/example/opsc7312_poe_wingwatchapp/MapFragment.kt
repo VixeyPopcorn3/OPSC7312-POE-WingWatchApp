@@ -16,7 +16,9 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import android.Manifest
+import android.net.Uri
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -25,12 +27,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import kotlin.math.pow
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapView: MapView
@@ -38,6 +42,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var requestQueue: RequestQueue
     private val eBirdApiKey = "m1gcp6fdtt7b"
+
+    private var hotspotName: String =""
     private var loginId: Int = 0
     private var uLat: Double = 0.0
     private var uLong: Double = 0.0
@@ -49,6 +55,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var detsCallback: DetsCallback? = null
     private var userSetDist: Int = 0
     private var userUnits: String = ""
+
 
     private val db = Firebase.firestore
 
@@ -85,44 +92,97 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         fetchBirdHotspots()
         // Set an OnMarkerClickListener for the map
         googleMap.setOnMarkerClickListener { marker ->
-            // Get the hotspot name from the marker's tag
+
             val hotspotInfo = marker.tag as? HotspotInfo
 
             if (hotspotInfo != null) {
-                // Access the properties from the tag
-                val hotspotName = hotspotInfo.hName
-                val locID = hotspotInfo.locID
-                val hLat = hotspotInfo.hLat
-                val hLong = hotspotInfo.hLong
+                hotspotName = hotspotInfo.hName
+                val distance = calculateDistance(hotspotInfo.hLat, hotspotInfo.hLong)
 
-                //Toast.makeText(context, "locID: $locID, hLat: $hLat, hLong: $hLong", Toast.LENGTH_SHORT).show()
-                getDets(locID)
-                detsCallback = object : DetsCallback {
-                    override fun onDetsCompleted() {
-                        //Log.d("Response", subNate2)
+                // Show the hotspot information in a custom view
+                //showHotspotInfoView(hotspotName, distance)
+                val infoView = showHotspotInfoView(hotspotName, distance)
 
-                        val intent = Intent(requireContext(), HotspotDetsPage::class.java)
-                        val extras = Bundle()
+                // Set this view as the info window for the marker
+                googleMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+                    override fun getInfoWindow(marker: Marker): View? {
+                        return null // Returning null here ensures that getInfoContents() is called.
+                    }
 
-                        extras.putString("hotspot_name", hotspotName)
-                        extras.putInt("loginId", loginId)
-                        extras.putString("subNate2", subNate2)
-                        extras.putString("locName", locName)
-                        extras.putDouble("uLat", uLat)
-                        extras.putDouble("uLong", uLong)
-                        extras.putDouble("hLat", hLat)
-                        extras.putDouble("hLong", hLong)
+                    override fun getInfoContents(marker: Marker): View {
+                        return infoView // Return the custom view for the info window
+                    }
+                })
 
-                        intent.putExtras(extras)
-                        startActivity(intent)
-                        activity?.finish()
+                marker.showInfoWindow() // Show the info window for the marker
+
+                val view = layoutInflater.inflate(R.layout.fragment_map2, null) // Replace 'your_layout_containing_button' with the actual layout name
+                val navigatebtn = view.findViewById<Button>(R.id.navigatebtn)
+                navigatebtn.setOnClickListener {
+                    val location = marker.position
+
+                    // Create an intent to open Google Maps on the web browser
+                    val navigationUrl = "https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
+
+                    // Create an intent to open the browser with the Google Maps URL
+                    val mapIntent = Intent(Intent.ACTION_VIEW, Uri.parse(navigationUrl))
+
+                    // Verify that there's a browser available to handle the intent
+                    if (mapIntent.resolveActivity(requireContext().packageManager) != null) {
+                        startActivity(mapIntent)
+                    } else {
+                        // Handle if no browser is available
+                        Toast.makeText(requireContext(), "No web browser found", Toast.LENGTH_SHORT).show()
                     }
                 }
+
                 // Return 'true' to indicate that you've handled the click event
                 true
             }
             true // Return true to indicate that the click event is handled
         }
+
+        // Set an OnInfoWindowClickListener to handle clicks on the info window
+        googleMap.setOnInfoWindowClickListener { marker ->
+            // using an Intent:
+            getDets(locID)
+            detsCallback = object : DetsCallback {
+                override fun onDetsCompleted() {
+                    //Log.d("Response", subNate2)
+
+                    val intent = Intent(requireContext(), HotspotDetsPage::class.java)
+                    val extras = Bundle()
+
+                    extras.putString("hotspot_name", hotspotName)
+                    extras.putInt("loginId", loginId)
+                    extras.putString("subNate2", subNate2)
+                    extras.putString("locName", locName)
+                    extras.putDouble("uLat", uLat)
+                    extras.putDouble("uLong", uLong)
+                    extras.putDouble("hLat", hLat)
+                    extras.putDouble("hLong", hLong)
+
+                    intent.putExtras(extras)
+                    startActivity(intent)
+                    activity?.finish()
+                }
+            }
+        }
+    }
+    private fun showHotspotInfoView(hotspotName: String, distance: Double): View {
+        val view = layoutInflater.inflate(R.layout.info_window_layout, null)
+
+        val nameTextView = view.findViewById<TextView>(R.id.info_window_title)
+        val distanceTextView = view.findViewById<TextView>(R.id.info_window_distance)
+
+        nameTextView.text = hotspotName
+        Log.d("distance", distance.toString())
+
+        val  dist = String.format("%.2f ",distance)
+        distanceTextView.text = "Distance: ${dist} Km" // You can format this as needed
+
+
+        return view
     }
 
     private fun enableMyLocation() {
@@ -241,6 +301,89 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             // Handle JSON parsing error
         }
     }
+    private fun addBirdHotspotsToMap1(jsonResponse: String) {
+        try {
+            val jsonArray = JSONArray(jsonResponse)
+
+            for (i in 0 until jsonArray.length()) {
+                val hotspot = jsonArray.getJSONObject(i)
+                val lat = hotspot.getDouble("lat")
+                val lng = hotspot.getDouble("lng")
+                val name = hotspot.getString("locName")
+                locID = hotspot.getString("locId")
+                hLat = lat
+                hLong = lng
+
+                val hotspotInfo = HotspotInfo(name, locID, lat, lng)
+                val hotspotLocation = LatLng(lat, lng)
+
+                // Customize the marker as needed
+                val markerOptions = MarkerOptions()
+                    .position(hotspotLocation)
+                    .title("Bird Hotspot")
+                    .snippet(name)
+
+                val marker = googleMap.addMarker(markerOptions)
+
+                if (marker != null) {
+                    marker.tag = hotspotInfo
+
+                    // Set a custom InfoWindow adapter
+                    googleMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+                        override fun getInfoWindow(marker: Marker): View? {
+                            // Return null to use the default InfoWindow
+                            return null
+                        }
+
+                        override fun getInfoContents(marker: Marker): View? {
+                            // Inflate the custom InfoWindow layout
+                            val view = layoutInflater.inflate(R.layout.info_window_layout, null)
+
+                            // Get references to the TextViews in the layout
+                            val titleTextView = view.findViewById<TextView>(R.id.info_window_title)
+                            val distanceTextView = view.findViewById<TextView>(R.id.info_window_distance)
+
+                            // Get the hotspot information from the marker's tag
+                            val hotspotInfo = marker.tag as? HotspotInfo
+                            if (hotspotInfo != null) {
+                                // Set the hotspot name and distance in the InfoWindow layout
+                                titleTextView.text = hotspotInfo.hName
+                                val distance = calculateDistance(lat, lng)
+                                distanceTextView.text = "Distance: $distance km"
+                            }
+
+                            return view
+                        }
+                    })
+                }
+            }
+        } catch (e: JSONException) {
+            // Handle JSON parsing error
+        }
+    }
+
+    private fun calculateDistance(hotLat: Double, lotLong: Double
+    ): Double {
+        val earthRadius = 6371 // Radius of the Earth in kilometers
+
+        // Convert latitude and longitude from degrees to radians
+        val uLatRad = Math.toRadians(uLat)
+        val uLongRad = Math.toRadians(uLong)
+        val hLatRad = Math.toRadians(hLat)
+        val hLongRad = Math.toRadians(hLong)
+
+        // Haversine formula
+        val dLat = hLatRad - uLatRad
+        val dLong = hLongRad - uLongRad
+
+        val a = Math.sin(dLat / 2)
+            .pow(2) + Math.cos(uLatRad) * Math.cos(hLatRad) * Math.sin(dLong / 2).pow(2)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+        // Calculate the distance in kilometers
+        return earthRadius * c
+    }
+
     data class HotspotInfo(val hName:String, val locID: String, val hLat: Double, val hLong: Double)
     fun getDets(locID: String)
     {
