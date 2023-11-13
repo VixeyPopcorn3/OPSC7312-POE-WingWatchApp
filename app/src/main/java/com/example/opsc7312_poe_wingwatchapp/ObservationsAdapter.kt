@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ObservationsAdapter(private var observations: List<Observations>) : RecyclerView.Adapter<ObservationsAdapter.ObsViewHolder>() {
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ObsViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_obs, parent, false)

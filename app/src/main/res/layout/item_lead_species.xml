@@ -41,7 +41,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/speciesMedal2"
+            android:id="@+id/sightMedal2"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginTop="10dp"

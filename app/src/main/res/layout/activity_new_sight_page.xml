@@ -194,6 +194,7 @@
                 android:layout_below="@id/NotesLay"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
+                android:layout_marginBottom="60dp"
                 android:background="@drawable/edit_text_border"
                 android:orientation="vertical">
 

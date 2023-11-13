@@ -76,7 +76,7 @@
                     android:layout_marginLeft="15dp"
                     android:backgroundTint="#00FFFFFF"
                     android:ems="10"
-                    android:fontFamily="@font/alfa_slab_one"
+                    android:fontFamily="@font/architects_daughter"
                     android:inputType="textPersonName"
                     android:textColor="#000000"
                     android:textSize="16dp"
@@ -113,9 +113,10 @@
                         android:id="@+id/PasswordEtxt"
                         android:layout_width="250dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
                         android:backgroundTint="#00FFFFFF"
                         android:ems="10"
-                        android:fontFamily="@font/alfa_slab_one"
+                        android:fontFamily="@font/architects_daughter"
                         android:inputType="textPassword"
                         android:textColor="#000000" />
 

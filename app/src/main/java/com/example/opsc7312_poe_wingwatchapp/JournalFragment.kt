@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
 import java.util.*
 
 class JournalFragment : Fragment() {
@@ -81,6 +82,20 @@ class JournalFragment : Fragment() {
                         journalList.add(journal)
                     }
                 }
+                // Sort the list by date in descending order
+                val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                journalList.sortWith(Comparator { journal1, journal2 ->
+                    val date1 = sdf.parse(journal1.date)
+                    val date2 = sdf.parse(journal2.date)
+                    date2!!.compareTo(date1)
+                })
+                /*// Sort the list by date in ascending order
+                val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                journalList.sortWith(Comparator { journal1, journal2 ->
+                    val date1 = sdf.parse(journal1.date)
+                    val date2 = sdf.parse(journal2.date)
+                    date1!!.compareTo(date2)
+                })*/
 
                 // Notify the adapter that the data has changed
                 journalAdapter.notifyDataSetChanged()

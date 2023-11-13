@@ -1,5 +1,7 @@
 package com.example.opsc7312_poe_wingwatchapp
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -9,6 +11,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -34,6 +38,7 @@ class ComandAchieFragment : Fragment() {
     private lateinit var leadSightRecycler: RecyclerView
     private lateinit var speciesMedal: ImageView
     private lateinit var sightMedal: ImageView
+    private lateinit var keyBtn: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +55,7 @@ class ComandAchieFragment : Fragment() {
         speciesTxt = view.findViewById<TextView>(R.id.userSpeciestxt)
         speciesMedal = view.findViewById(R.id.speciesMedal)
         sightMedal = view.findViewById(R.id.sightMedal)
+        keyBtn = view.findViewById(R.id.imageButton)
 
         // Initialize RecyclerViews and Adapters
         leadSpeciesRecycler = view.findViewById(R.id.leadSpeciesRecycler)
@@ -67,6 +73,26 @@ class ComandAchieFragment : Fragment() {
         getDets(usernameTxt, sightTxt, speciesTxt)
         fetchLeadSpeciesData()
         fetchLeadSightData()
+
+
+        keyBtn.setOnClickListener()
+        {
+            val dialogBuilder = AlertDialog.Builder(requireContext())
+            val dialogView = layoutInflater.inflate(R.layout.popup_image, null)
+            val imageView = dialogView.findViewById<ImageView>(R.id.iv_popup_image)
+            // Set the image to display in the popup
+            imageView.setImageResource(R.drawable.badge_system)
+
+            dialogBuilder.setView(dialogView)
+            val alertDialog = dialogBuilder.create()
+            alertDialog.show()
+
+            alertDialog.setOnCancelListener {
+                alertDialog.dismiss()
+            }
+        }
+
+
 
         return view
     }
@@ -110,9 +136,6 @@ class ComandAchieFragment : Fragment() {
                         {
                             updateInnerCircleColor(speciesMedal, speciesColor)
                         }
-
-                        //updateInnerCircleColor(sightMedal, sightColor)
-                        //updateInnerCircleColor(speciesMedal, speciesColor)
 
                     }
                 }
