@@ -47,7 +47,7 @@ class ProfandSetFragment : Fragment() {
         val unitsAdapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.units_array, // Create this array in your strings.xml
-            android.R.layout.simple_spinner_item
+            R.layout.spinner_item
         )
         distanceUnitstxt = view.findViewById(R.id.DistanceUnitstxt)
         // Set the dropdown view resource

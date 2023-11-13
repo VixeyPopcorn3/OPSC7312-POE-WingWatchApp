@@ -12,6 +12,7 @@ import android.widget.*
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -177,7 +178,7 @@ class ObservationsFragment : Fragment() {
                 // Create an ArrayAdapter with the hotspotList
                 val adapter = ArrayAdapter(
                     requireContext(),
-                    android.R.layout.simple_spinner_item,
+                    R.layout.spinner_item, // Using the custom layout for each item,
                     hotspotList
                 )
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -221,6 +222,9 @@ class ObservationsFragment : Fragment() {
                 query = query.whereEqualTo("Hotspot", selectedLocation)
             }
 
+            // Order the observations by DateSeen in descending order
+            //query = query.orderBy("DateSeen", Query.Direction.DESCENDING)
+
             // Execute the query
             query.get()
                 .addOnSuccessListener { querySnapshot ->
@@ -235,6 +239,8 @@ class ObservationsFragment : Fragment() {
                             observationsList.add(observation)
                         }
                     }
+                    // Sort the observations by date in descending order (newest to oldest)
+                    observationsList.sortByDescending { it.dateSeen }
 
                     // Notify the adapter that the data has changed
                     observationAdapter.notifyDataSetChanged()

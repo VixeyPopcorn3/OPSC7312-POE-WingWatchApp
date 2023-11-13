@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" /> <!-- Transparent color for the shape -->
+            <corners android:radius="20dp" /> <!-- Adjust the corner radius -->
+        </shape>
+    </item>
+    <item>
+        <bitmap android:src="@drawable/confetti_png" /> <!-- Set your desired drawable as the background -->
+    </item>
+</layer-list>

@@ -34,7 +34,21 @@ class LeadSightAdapter(private var userList: List<Community> = listOf()) : Recyc
                 250 to "#8C52FF"
             )
         )
+
+        private fun getColorForSight(sightCount: Int): Int {
+            return when (sightCount) {
+                in 0..24L -> Color.parseColor("#7cfc00")
+                in 25..49L -> Color.parseColor("#CD7F32")
+                in 50..74L -> Color.parseColor("#C0C0C0")
+                in 75..99L -> Color.parseColor("#FFD700")
+                in 100..149L -> Color.parseColor("#EDF8E5")
+                in 150..199L -> Color.parseColor("#B9F2FF")
+                in 200..249L -> Color.parseColor("#FF66C4")
+                else -> Color.parseColor("#8C52FF")
+            }
+        }
     }
+
     fun submitList(list: List<Community>) {
         userList = list
         notifyDataSetChanged()
@@ -47,7 +61,6 @@ class LeadSightAdapter(private var userList: List<Community> = listOf()) : Recyc
 
     override fun onBindViewHolder(holder: LeadSightViewHolder, position: Int) {
         val currentUser = userList[position]
-        // Bind user data to the item_lead_sight layout views
         holder.bind(currentUser)
     }
 
@@ -57,22 +70,31 @@ class LeadSightAdapter(private var userList: List<Community> = listOf()) : Recyc
         // Find and hold the views from item_lead_sight
         private val leadUserName: TextView = itemView.findViewById(R.id.leadUserName)
         private val leadUserClass: TextView = itemView.findViewById(R.id.leadUserClass)
-        private val speciesMedal: ImageView = itemView.findViewById(R.id.speciesMedal2)
+        private val sightMedal: ImageView = itemView.findViewById(R.id.sightMedal2)
         private val leadUserName3: TextView = itemView.findViewById(R.id.leadUserName3)
+
+        private fun updateInnerCircleColor(circleImageView: ImageView, color: Int) {
+            val drawable = circleImageView.drawable
+
+            if (drawable is LayerDrawable) {
+                val innerCircle =
+                    drawable.findDrawableByLayerId(R.id.innerCircle) as GradientDrawable
+                innerCircle.setColor(color)
+            }
+        }
 
         fun bind(community: Community) {
             leadUserName.text = community.username
-            // Set leadUserClass based on the sight number
             leadUserClass.text = getSightBadge(community.sightNumber)
             leadUserName3.text = community.sightNumber.toString()
+
             // Set speciesMedal image based on sight number
             //speciesMedal.setImageResource(getSightMedal(community.sightNumber).toInt())
 
-            val medalDrawable: LayerDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.medals) as LayerDrawable
-            val innerCircle: GradientDrawable = medalDrawable.findDrawableByLayerId(R.id.innerCircle) as GradientDrawable
 
-            innerCircle.setColor(Color.parseColor(getSightMedal(community.sightNumber)))
-
+            // Set speciesMedal image based on species number using color logic from getColorForSpecies
+            val sightColor = LeadSightAdapter.getColorForSight(community.sightNumber)
+            updateInnerCircleColor(sightMedal, sightColor)
         }
 
 
@@ -87,19 +109,6 @@ class LeadSightAdapter(private var userList: List<Community> = listOf()) : Recyc
                 }
             }
             return lastBadge
-        }
-
-        private fun getSightMedal(sightNumber: Int): String {
-            val rules = sightClassRules["colour"] ?: mapOf()
-            var lastcolor = "#7cfc00"
-            for ((number, color) in rules) {
-                if (sightNumber >= number) {
-                    lastcolor = color
-                } else {
-                    return lastcolor // Return the last color if no match
-                }
-            }
-            return lastcolor
         }
     }
 }

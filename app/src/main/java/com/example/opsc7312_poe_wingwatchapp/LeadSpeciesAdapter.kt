@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class LeadSpeciesAdapter(private var userList: List<Community> = listOf()) : RecyclerView.Adapter<LeadSpeciesAdapter.LeadSpeciesViewHolder>() {
@@ -35,9 +34,24 @@ class LeadSpeciesAdapter(private var userList: List<Community> = listOf()) : Rec
                 250 to "Ultimate Ornithologist"
             )
         )
-    }
 
-    fun submitList(list: List<Community>) {
+    private fun getColorForSpecies(speciesCount: Int): Int {
+        return when (speciesCount) {
+            in 0..14 -> Color.parseColor("#7cfc00")
+            in 15..24 -> Color.parseColor("#000000")
+            in 25..49 -> Color.parseColor("#CD7F32")
+            in 50..74 -> Color.parseColor("#C0C0C0")
+            in 75..99 -> Color.parseColor("#FFD700")
+            in 100..149 -> Color.parseColor("#EDF8E5")
+            in 150..199 -> Color.parseColor("#B9F2FF")
+            in 200..249 -> Color.parseColor("#FF66C4")
+            else -> Color.parseColor("#8C52FF")
+        }
+    }
+}
+
+
+fun submitList(list: List<Community>) {
         userList = list
         notifyDataSetChanged()
     }
@@ -49,34 +63,35 @@ class LeadSpeciesAdapter(private var userList: List<Community> = listOf()) : Rec
 
     override fun onBindViewHolder(holder: LeadSpeciesViewHolder, position: Int) {
         val currentUser = userList[position]
-        // Bind user data to the item_lead_species layout views
         holder.bind(currentUser)
     }
 
     override fun getItemCount(): Int = userList.size
 
     class LeadSpeciesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Find and hold the views from item_lead_species
         private val leadUserName: TextView = itemView.findViewById(R.id.leadUserName)
         private val leadUserClass: TextView = itemView.findViewById(R.id.leadUserClass)
-        private val speciesMedal: ImageView = itemView.findViewById(R.id.speciesMedal2)
+        private val speciesMedal: ImageView = itemView.findViewById(R.id.sightMedal2)
         private val leadUserName3: TextView = itemView.findViewById(R.id.leadUserName3)
+
+        private fun updateInnerCircleColor(circleImageView: ImageView, color: Int) {
+            val drawable = circleImageView.drawable
+
+            if (drawable is LayerDrawable) {
+                val innerCircle = drawable.findDrawableByLayerId(R.id.innerCircle) as GradientDrawable
+                innerCircle.setColor(color)
+            }
+        }
 
         fun bind(community: Community) {
             leadUserName.text = community.username
-            // Set leadUserClass based on the species number
             leadUserClass.text = getSpeciesBadge(community.speciesNumber)
             leadUserName3.text = community.speciesNumber.toString()
-            // Set speciesMedal image based on species number
-            //speciesMedal.setImageResource(getSpeciesMedal(community.speciesNumber).toInt())
 
-            val medalDrawable: LayerDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.medals) as LayerDrawable
-            val innerCircle: GradientDrawable = medalDrawable.findDrawableByLayerId(R.id.innerCircle) as GradientDrawable
-
-            innerCircle.setColor(Color.parseColor(getSpeciesMedal(community.speciesNumber)))
-
+            // Set speciesMedal image based on species number using color logic from getColorForSpecies
+            val speciesColor = getColorForSpecies(community.speciesNumber)
+            updateInnerCircleColor(speciesMedal, speciesColor)
         }
-
 
         private fun getSpeciesBadge(speciesNumber: Int): String {
             val rules = speciesClassRules["badge"] ?: mapOf()
@@ -89,19 +104,6 @@ class LeadSpeciesAdapter(private var userList: List<Community> = listOf()) : Rec
                 }
             }
             return lastBadge
-        }
-
-        private fun getSpeciesMedal(speciesNumber: Int): String {
-            val rules = speciesClassRules["colour"] ?: mapOf()
-            var lastcolor = "#7cfc00"
-            for ((number, color) in rules) {
-                if (speciesNumber >= number) {
-                    lastcolor = color
-                } else {
-                    return lastcolor // Return the last color if no match
-                }
-            }
-            return lastcolor
         }
     }
 }

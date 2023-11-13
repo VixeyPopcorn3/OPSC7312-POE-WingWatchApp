@@ -30,6 +30,7 @@ class HotspotDetsPage : AppCompatActivity() {
     private lateinit var subNate2: String
     private lateinit var hotspotName: String
     private lateinit var locName: String
+    private var dist: Double = 0.0
     private var hLat: Double = 0.0
     private var hLong: Double = 0.0
     private var uLat: Double = 0.0
@@ -56,7 +57,8 @@ class HotspotDetsPage : AppCompatActivity() {
         hLong =  intent.getDoubleExtra("hLong", 0.0)
         uLat =  intent.getDoubleExtra("uLat", 0.0)
         uLong =  intent.getDoubleExtra("uLong", 0.0)
-        Log.d("login", loginId.toString())
+        dist =  intent.getDoubleExtra("dist", 0.0)
+        //Log.d("login", loginId.toString())
 
         //Toast.makeText(this, subNate2, Toast.LENGTH_SHORT).show()
 
@@ -94,7 +96,7 @@ class HotspotDetsPage : AppCompatActivity() {
         locationTxt.text = locName
         //locationDistTxt.text = calculateDistance().toString() + "km"
         nearbyobs()
-        locationDistTxt.text = String.format("%.2f ", calculateDistance())
+        locationDistTxt.text = String.format("%.2f ", dist)
     }
     private fun calculateDistance(
     ): Double {

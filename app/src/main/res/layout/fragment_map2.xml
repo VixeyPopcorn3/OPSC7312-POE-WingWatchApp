@@ -38,9 +38,10 @@
         android:rotation="-4"
         android:rotationX="8"
         android:rotationY="-8"
-        android:text="New Sighting"
+        android:text="Hotspot Details"
         android:textColor="#000000"
-        android:textSize="14dp" />
+        android:textSize="14dp"
+        tools:visibility="gone" />
 
     <Button
         android:id="@+id/navigatebtn"
@@ -57,5 +58,6 @@
         android:rotationY="4"
         android:text="Navigate"
         android:textColor="#000000"
-        android:textSize="14dp" />
+        android:textSize="14dp"
+        tools:visibility="gone" />
 </FrameLayout>

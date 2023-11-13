@@ -47,6 +47,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var requestQueue: RequestQueue
+    private lateinit var  navigatebtn: Button
+    private lateinit var  hotspotDetsbtn: Button
     private val eBirdApiKey = "m1gcp6fdtt7b"
 
     private var hotspotName: String =""
@@ -80,14 +82,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         loginId = arguments?.getInt("loginId") ?: 0
 
-        val newSightbtn = view.findViewById<Button>(R.id.newSightbtn)
+        /*val newSightbtn = view.findViewById<Button>(R.id.newSightbtn)
         newSightbtn.setOnClickListener {
             // Create an Intent to open the NewActivity
             val intent = Intent(requireContext(), NewSightPage::class.java)
             intent.putExtra("loginId", loginId)
             startActivity(intent)
             activity?.finish()
-        }
+        }*/
+        navigatebtn = view.findViewById<Button>(R.id.navigatebtn)
+        navigatebtn.visibility = View.GONE
+
+        hotspotDetsbtn = view.findViewById<Button>(R.id.newSightbtn)
+        hotspotDetsbtn.visibility = View.GONE
         return view
     }
 
@@ -96,6 +103,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         enableMyLocation()
         fetchBirdHotspots()
         markUserObservations()
+        var dist: Double = 0.0
+
         // Set an OnMarkerClickListener for the map
         googleMap.setOnMarkerClickListener { marker ->
 
@@ -103,7 +112,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             if (hotspotInfo != null) {
                 hotspotName = hotspotInfo.hName
-                //val distance = calculateDistance(hotspotInfo.hLat, hotspotInfo.hLong)
+                dist = hotspotInfo.distance
 
                 // Show the hotspot information in a custom view
                 //showHotspotInfoView(hotspotName, distance)
@@ -122,8 +131,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                 marker.showInfoWindow() // Show the info window for the marker
 
-                val view = layoutInflater.inflate(R.layout.fragment_map2, null) // Replace 'your_layout_containing_button' with the actual layout name
-                val navigatebtn = view.findViewById<Button>(R.id.navigatebtn)
+                //val view = layoutInflater.inflate(R.layout.fragment_map2, null) // Replace 'your_layout_containing_button' with the actual layout name
+                //navigatebtn = view.findViewById<Button>(R.id.navigatebtn)
+                navigatebtn.visibility  = View.VISIBLE
                 navigatebtn.setOnClickListener {
                     val location = marker.position
 
@@ -139,6 +149,33 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     } else {
                         // Handle if no browser is available
                         Toast.makeText(requireContext(), "No web browser found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                hotspotDetsbtn.visibility  = View.VISIBLE
+                hotspotDetsbtn.setOnClickListener {
+                    // using an Intent:
+                    getDets(locID)
+                    detsCallback = object : DetsCallback {
+                        override fun onDetsCompleted() {
+                            //Log.d("Response", subNate2)
+
+                            val intent = Intent(requireContext(), HotspotDetsPage::class.java)
+                            val extras = Bundle()
+
+                            extras.putString("hotspot_name", hotspotName)
+                            extras.putInt("loginId", loginId)
+                            extras.putString("subNate2", subNate2)
+                            extras.putString("locName", locName)
+                            extras.putDouble("uLat", uLat)
+                            extras.putDouble("uLong", uLong)
+                            extras.putDouble("hLat", hLat)
+                            extras.putDouble("hLong", hLong)
+                            extras.putDouble("dist", dist)
+
+                            intent.putExtras(extras)
+                            startActivity(intent)
+                            activity?.finish()
+                        }
                     }
                 }
 
@@ -167,6 +204,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     extras.putDouble("uLong", uLong)
                     extras.putDouble("hLat", hLat)
                     extras.putDouble("hLong", hLong)
+                    extras.putDouble("dist", dist)
 
                     intent.putExtras(extras)
                     startActivity(intent)
@@ -413,6 +451,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     locName = hotspot.getString("hierarchicalName")
 
                     //Log.d("Response", subNate2)
+                    // Log the specific values obtained
+                    Log.d("subNate2", subNate2)
+                    Log.d("locName", locName)
+
                     detsCallback?.onDetsCompleted()
 
                 } catch (e: JSONException) {
