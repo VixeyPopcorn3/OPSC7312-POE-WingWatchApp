@@ -16,6 +16,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import android.Manifest
+import android.location.Geocoder
 import android.net.Uri
 import android.util.Log
 import android.widget.TextView
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -34,9 +36,11 @@ import com.google.firebase.ktx.Firebase
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.IOException
 import java.lang.Math.*
 import kotlin.math.asin
 import kotlin.math.pow
+import android.graphics.Color
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapView: MapView
@@ -75,7 +79,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         requestQueue = Volley.newRequestQueue(requireContext())
 
         loginId = arguments?.getInt("loginId") ?: 0
-        Log.d("login frag", loginId.toString())
 
         val newSightbtn = view.findViewById<Button>(R.id.newSightbtn)
         newSightbtn.setOnClickListener {
@@ -92,6 +95,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         googleMap = map
         enableMyLocation()
         fetchBirdHotspots()
+        markUserObservations()
         // Set an OnMarkerClickListener for the map
         googleMap.setOnMarkerClickListener { marker ->
 
@@ -304,7 +308,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             // Handle JSON parsing error
         }
     }
-    private fun addBirdHotspotsToMap1(jsonResponse: String) {
+    /*private fun addBirdHotspotsToMap1(jsonResponse: String) {
         try {
             val jsonArray = JSONArray(jsonResponse)
 
@@ -364,7 +368,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         } catch (e: JSONException) {
             // Handle JSON parsing error
         }
-    }
+    }*/
 
     private fun calculateDistance(hotLat: Double, hotLong: Double
     ): Double {
@@ -452,6 +456,63 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 Toast.makeText(context, "Failed to retrieve settings: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+    private fun markUserObservations() {
+        val observationsCollection = db.collection("Observations")
+
+        observationsCollection
+            .whereEqualTo("LoginID", loginId)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val speciesName = document.getString("SpeciesName") ?: ""
+                    val hotspot = document.getString("Hotspot") ?: ""
+                    val currentLoc = document.getString("currentLoc") ?: ""
+
+                    // If latitude and longitude are present, use these coordinates
+                    if (currentLoc.matches(Regex("^-?\\d+\\.\\d+\\|-?\\d+\\.\\d+\$"))) {
+                        val (latitude, longitude) = currentLoc.split("|")
+                        val observationLocation = LatLng(latitude.toDouble(), longitude.toDouble())
+                        placeMarker(observationLocation, speciesName)
+                    } else {
+                        // If latitude and longitude are not available, use the hotspot string
+                        if (hotspot.isNotEmpty()) {
+                            // Use a geocoder or some service to get the coordinates for the hotspot
+                            val hotspotCoordinates = getCoordinatesForHotspot(hotspot)
+                            if (hotspotCoordinates != null) {
+                                placeMarker(hotspotCoordinates, speciesName)
+                            }
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle errors
+            }
+    }
+
+    private fun placeMarker(location: LatLng, title: String) {
+        // Place a blue marker for the user's observation
+        googleMap.addMarker(MarkerOptions().position(location).title(title).icon(
+            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+    }
+
+    private fun getCoordinatesForHotspot(hotspot: String): LatLng? {
+        val geocoder = Geocoder(requireContext())
+
+        try {
+            val addresses = geocoder.getFromLocationName(hotspot, 1)
+            if (addresses != null && addresses.isNotEmpty()) {
+                val latitude = addresses[0].latitude
+                val longitude = addresses[0].longitude
+                return LatLng(latitude, longitude)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
     interface UserSettingsCallback {
         fun onUserSettingsFetched(userSetDist: String)
     }

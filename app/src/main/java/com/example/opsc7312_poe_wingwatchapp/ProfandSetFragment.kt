@@ -209,8 +209,8 @@ class ProfandSetFragment : Fragment() {
                     val email = document.getString("Email")
 
                     if (userName != null && email != null) {
-                        val formattedUsername = "      Username: <i>$userName</i>"
-                        val formattedEmail = "      Email: <i>$email</i>"
+                        val formattedUsername = "<i>$userName</i>"
+                        val formattedEmail = "<i>$email</i>"
 
                         usernameTxt.text = Html.fromHtml(formattedUsername, Html.FROM_HTML_MODE_LEGACY)
                         emailTxt.text = Html.fromHtml(formattedEmail, Html.FROM_HTML_MODE_LEGACY)

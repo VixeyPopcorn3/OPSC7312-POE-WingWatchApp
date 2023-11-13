@@ -22,18 +22,34 @@
             android:text="Community  &amp;  Achievements"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="55dp" />
+            android:textSize="50dp" />
 
-        <TextView
-            android:id="@+id/userNametxt"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/berkshire_swash"
-            android:text="Billy"
-            android:textColor="#000000"
-            android:textSize="30sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/userNametxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/berkshire_swash"
+                android:text="Billy"
+                android:textColor="#000000"
+                android:textSize="30sp" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginRight="10dp"
+                android:background="#00FFFFFF"
+                android:scaleType="centerInside"
+                android:src="@drawable/keyicon" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linlaySpecies"
@@ -96,7 +112,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#a0bff0"
+                android:background="@drawable/confetti_png"
                 android:orientation="vertical">
 
                 <TextView

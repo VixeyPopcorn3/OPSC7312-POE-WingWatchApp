@@ -15,6 +15,8 @@
     <string name="menu_ComandAchie">Community &amp; Achievements</string>
     <string name="menu_Journal">Journal</string>
     <string name="UnderCon">This Feature is Coming Soon, Currently Under Construction</string>
+    <string name="map_content_description">Map View: Interactive map showing locations</string>
+
 
     <string-array name="units_array">
         <item>Metric</item>
