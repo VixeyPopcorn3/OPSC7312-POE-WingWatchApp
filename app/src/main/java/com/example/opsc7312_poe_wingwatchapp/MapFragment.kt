@@ -41,6 +41,7 @@ import java.lang.Math.*
 import kotlin.math.asin
 import kotlin.math.pow
 import android.graphics.Color
+import android.widget.ScrollView
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapView: MapView
@@ -72,6 +73,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_map2, container, false)
+
+        // Assuming your main ScrollView has an ID of mainScrollView
+        val mainScrollView = activity?.findViewById<ScrollView>(R.id.myScrollView)
+
+        // Now you can manipulate the ScrollView as needed
+        mainScrollView?.isEnabled = false
 
         mapView = view.findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
@@ -130,6 +137,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 })
 
                 marker.showInfoWindow() // Show the info window for the marker
+
 
                 //val view = layoutInflater.inflate(R.layout.fragment_map2, null) // Replace 'your_layout_containing_button' with the actual layout name
                 //navigatebtn = view.findViewById<Button>(R.id.navigatebtn)
